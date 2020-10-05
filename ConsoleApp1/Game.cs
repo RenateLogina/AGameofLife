@@ -6,8 +6,10 @@ namespace GameofLife
 {
     class Game
     {
-        //public string UserAction = "";
-        public int diff;
+        public string UserAction = "";
+        GameLogic logic = new GameLogic();
+        public int Diff;
+
         public void GameMenu()
         {
             Console.SetWindowSize(120, 40);
@@ -21,41 +23,52 @@ namespace GameofLife
                               "\n\n\n                                                  ENTER Q TO QUIT");
 
             Console.SetCursorPosition(59, 22);
+            string UserAction = Console.ReadLine().ToLower();
+            switch (UserAction)
+            {
+                case "1":
+                case "2":
+                case "3":
+                    Console.Clear();
+                    Diff = Convert.ToInt32(UserAction);
+                    GameBoard();
+                    logic.GameStart(Diff);
+                    break;
+                default:
+                    Console.Clear();
+                    break;
+                case "q":
+                    return;
+            }
         }
-        public void GameBoard(string userAction)
+        public void GameBoard()
         {
             Console.CursorVisible = false;
-            diff = Convert.ToInt32(userAction);
+            
             Console.WriteLine("\n  A new game has started");
-            Console.WriteLine("  Difficulty is {0}", diff);
+            Console.WriteLine("  Difficulty is {0}", Diff);
             //change console size?
-            int dimx = 50 * diff;
-            int dimy = 20 + diff*diff;
+            int dimx = 50 * Diff;
+            int dimy = 20 + Diff*Diff;
 
             Console.SetWindowSize(dimx,dimy) ;
             //draw game field
-            for (int i = 5; i < 20 + diff * diff - 2; i++)
+            for (int i = 5; i < 20 + Diff * Diff - 2; i++)
             {
                 Console.SetCursorPosition(1, i);
                 Console.Write("\u2588");
-                Console.SetCursorPosition(50 * diff-2, i);
+                Console.SetCursorPosition(50 * Diff-2, i);
                 Console.Write("\u2588");
             }
-            for (int i = 1; i < 50 * diff-1; i++)
+            for (int i = 1; i < 50 * Diff-1; i++)
             {                
                 Console.SetCursorPosition(i, 5);
                 Console.Write("\u2584");
-                Console.SetCursorPosition(i, 20 + diff * diff-2);
+                Console.SetCursorPosition(i, 20 + Diff * Diff-2);
                 Console.Write("\u2580");
             }
                                    
         }
-        public void GameLogic()
-        {
-            Console.SetCursorPosition((50 * diff)/2 - 15, 10);
-            Console.WriteLine("The first seed to appear here");
-            Console.ReadKey();
-
-        }
+        
     }
 }
