@@ -19,7 +19,8 @@ namespace GameofLife
                     case "2":
                     case "3":
                         Console.Clear();
-                        game.NewGame(UserAction);
+                        game.GameBoard(UserAction);
+                        game.GameLogic();
                         break;
                     default:
                         Console.Clear();
