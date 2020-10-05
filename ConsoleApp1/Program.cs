@@ -6,7 +6,29 @@ namespace GameofLife
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World! Lol kek");
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Game game = new Game();
+            while (true)
+            {
+                Console.Clear();
+                game.GameMenu();
+                string UserAction = Console.ReadLine().ToLower();
+                switch (UserAction)
+                {
+                    case "1":
+                    case "2":
+                    case "3":
+                        Console.Clear();
+                        game.NewGame(UserAction);
+                        break;
+                    default:
+                        Console.Clear();
+                        break;
+                    case "q":
+                        return;
+                }
+
+            }
         }
     }
 }
