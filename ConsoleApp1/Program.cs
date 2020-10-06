@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace GameofLife
 {
@@ -8,7 +9,6 @@ namespace GameofLife
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Game game = new Game();
-            Console.Clear();
             game.GameMenu();
         }
     }
