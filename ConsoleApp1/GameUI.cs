@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameofLife
+﻿namespace GameofLife
 {
-    class Game
+    using System;
+    public class GameUI
     {
         //UserAction should store the string entered when navigating menu
         public string UserAction = "";
@@ -14,7 +11,7 @@ namespace GameofLife
 
         public void GameMenu()
         {
-            Console.SetWindowSize(150, 30);
+            Console.SetWindowSize(155, 30);
             Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
                               "                                                        the\n" +
                               "                                                   GAME OF LIFE\n"+
@@ -49,31 +46,27 @@ namespace GameofLife
             
             Console.WriteLine("\n  A new game has started");
             Console.WriteLine("  BoardSize is {0}", BoardSize);
-            //this sets the window size according to the user input
-            //int dimx = 50 * BoardSize;
-            //int dimy = 20 + BoardSize*BoardSize;
-            //actually changes the window size
-            //Console.SetWindowSize(dimx,dimy) ;
-            //draws game board --- vertical lines
-            for (int height = 5; height < 20 + BoardSize * BoardSize - 2; height++)
+
+            for (int height = 5; height < 20 + BoardSize * BoardSize; height++)
             {
                 Console.SetCursorPosition(1, height);
                 Console.Write("\u2588");
-                Console.SetCursorPosition(50 * BoardSize-2, height);
+                Console.SetCursorPosition(50 * BoardSize-1, height);
                 Console.Write("\u2588");
             }
             //draws game board --- horizontal lines
-            for (int width = 1; width < 50 * BoardSize-1; width++)
+            for (int width = 1; width < 50 * BoardSize; width++)
             {                
                 Console.SetCursorPosition(width, 5);
                 Console.Write("\u2584");
-                Console.SetCursorPosition(width, 20 + BoardSize * BoardSize-2);
+                Console.SetCursorPosition(width, 20 + BoardSize * BoardSize);
                 Console.Write("\u2580");
             }
             //I should enter code to print the first seed here. I want it to be able to grow from the center.
             Console.SetCursorPosition((50 * BoardSize) / 2 - 15, 10);
-            Console.WriteLine("The first seed to appear here");
             //read and print logic.
+            logic.SetSeed(BoardSize);
+            logic.PrintArray();
             Console.ReadKey();
 
         }

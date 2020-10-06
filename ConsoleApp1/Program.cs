@@ -1,15 +1,13 @@
-﻿using System;
-using System.Linq;
-
-namespace GameofLife
+﻿namespace GameofLife
 {
+    using System;
     class Program
     {
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Game game = new Game();
-            game.GameMenu();
+            GameUI gameUI = new GameUI();
+            gameUI.GameMenu();
         }
     }
 }

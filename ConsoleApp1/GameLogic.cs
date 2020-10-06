@@ -1,59 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-
+﻿
 namespace GameofLife
 {
-    class GameLogic
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography.X509Certificates;
+
+    public class GameLogic
     {
-        public int CellCount;
+        public int MyProperty { get; set; }
+        //public int CellCount;
         Random random = new Random();
         //pointerposition
         public int xPos;
         public int yPos;
-        public bool[,] Seed;
-        public void SetSeed()
+        public int SizeX;
+        public int SizeY;
+        //stores array values
+        public string[,] Generation;
+        //Sets the very first iteration of the game, randomly
+        public void SetSeed(int boardSize)
         {
-            CellCount = 10;
+            Console.WriteLine("   this means the SetSeed is called \u25CF");
             //set a 2D array size for the seed
-            Seed = new bool[6,6];
-            //fills seed with "true" until there are 15 seeds in 6x6 array
-            for(int ColIndex = 0; ColIndex < 6; ColIndex ++)
+            SizeX = 50 * boardSize - 3;
+            SizeY = 14 + boardSize * boardSize;
+            Generation = new string[SizeY, SizeX];
+            //populate Generation with "empty" cells for test purposes
+            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
             {
-                for (int RowIndex = 0; RowIndex < 6; RowIndex++)
+                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
                 {
-                    int SeedCount = 0;
-                    while(SeedCount < 15)
-                    {
-                        int randomColIndex = random.Next(ColIndex);
-                        int randomRowIndex = random.Next(RowIndex);
-                        // fills in the empty positions
-                        if (Seed[randomColIndex, randomRowIndex] == false)
-                        {
-                            Seed[randomColIndex, randomRowIndex] = true;
-                            SeedCount++;
-                        }
-                    }
+                    Generation[RowIndex, ColIndex] = " ";
                 }
             }
-            //How do I return the seed generated?
-            //Turn this into a value... huh?
-            foreach (bool value in Seed)
+            //fills generation with seedlings on a field sized 6x6, randomly, positioned approximately in middle
+            string[] Filler = new string[] { "\u25CF", " " };
+            for (int RowIndex = SizeY/2-6; RowIndex < SizeY/2; RowIndex++)
             {
-                if (value == true)
+                for (int ColIndex = SizeX/2-6; ColIndex < SizeX/2; ColIndex++)
                 {
-                    Console.Write(value);
-                }
-                else
-                {
-                    Console.Write("X");
+                    int CharacterIndex = random.Next(Filler.Length);
+                    Generation[RowIndex, ColIndex] = Filler[CharacterIndex];
                 }
             }
-            return;
-            
-            Console.ReadKey();
-
+        }
+        public void PrintArray()
+        {
+            //prints the array
+            xPos = 2;
+            yPos = 6;
+            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)//how tall
+            {
+                Console.SetCursorPosition(xPos, yPos);
+                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)//how wide
+                {
+                    //prints a single character
+                    Console.Write(Generation[RowIndex, ColIndex]);
+                }
+                yPos++;
+                //Prints every new row in next line
+                //Console.Write("\n");
+            }
         }
     }
 }
