@@ -1,6 +1,7 @@
 ﻿namespace GameofLife
 {
     using System;
+    using System.Threading;
     public class GameUI
     {
         //UserAction should store the string entered when navigating menu
@@ -66,8 +67,13 @@
             Console.SetCursorPosition((50 * BoardSize) / 2 - 15, 10);
             //read and print logic.
             logic.SetSeed(BoardSize);
-            logic.PrintArray();
-            Console.ReadKey();
+            while(true)
+            {
+                logic.PrintArray();              
+                logic.NewGeneration();
+                Thread.Sleep(1000);
+
+            }
 
         }
         
