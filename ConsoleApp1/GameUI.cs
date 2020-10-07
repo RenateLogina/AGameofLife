@@ -23,7 +23,7 @@
                               "\n\n\n                                                  ENTER Q TO QUIT");
 
             Console.SetCursorPosition(59, 22);
-            string UserAction = Console.ReadLine().ToLower();
+            UserAction = Console.ReadLine().ToLower();
             switch (UserAction)
             {
                 case "1":
@@ -44,8 +44,8 @@
         public void GameBoard()
         {
             Console.CursorVisible = false;
-            
-            Console.WriteLine("\n  A new game has started");
+
+            Console.WriteLine("\n  Live cells: {0}", logic.LiveCells); 
             Console.WriteLine("  BoardSize is {0}", BoardSize);
 
             for (int height = 5; height < 20 + BoardSize * BoardSize; height++)
@@ -64,15 +64,24 @@
                 Console.Write("\u2580");
             }
             //I should enter code to print the first seed here. I want it to be able to grow from the center.
-            Console.SetCursorPosition((50 * BoardSize) / 2 - 15, 10);
             //read and print logic.
+            int Iteration = 0;
             logic.SetSeed(BoardSize);
             while(true)
             {
-                logic.PrintArray();              
+                logic.PrintArray();
                 logic.NewGeneration();
+                Iteration++;
+                Console.SetCursorPosition(2, 3);
+                Console.WriteLine("Iteration NR: {0}", Iteration);
+                //switch(UserAction)
+                //{
+                //    case "p":
+                //        break;
+                //    default:
+                //        break;
+                //}
                 Thread.Sleep(1000);
-
             }
 
         }

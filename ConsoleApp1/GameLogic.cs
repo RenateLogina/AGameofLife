@@ -15,6 +15,7 @@ namespace GameofLife
         public int yPos;
         public int SizeX;
         public int SizeY;
+        public int LiveCells;
         //stores array values
         static string[,] Generation;
         //Sets the very first iteration of the game, randomly
@@ -51,6 +52,9 @@ namespace GameofLife
                 }
                 yPos++;
             }
+            CellCounter();
+            Console.SetCursorPosition(13, 1);
+            Console.Write(LiveCells);
         }
         public void NewGeneration()//neadekvati dzemdee ssuunas
         {
@@ -132,6 +136,21 @@ namespace GameofLife
             {
                 neighbours++;
             }
+        }
+        public void CellCounter()
+        {
+            LiveCells = 0;
+            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
+            {
+                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
+                {
+                    if(Generation[RowIndex,ColIndex] == "\u25CF")
+                    {
+                        LiveCells++;
+                    }
+                }
+            }
+
         }
     }
 }
