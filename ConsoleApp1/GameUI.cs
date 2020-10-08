@@ -40,14 +40,19 @@
                     return;
             }
         }
-        //changes the size of window, prints gameboard borders
+        //prints gameboard borders and any UI information of the particular game
         public void GameBoard()
         {
             Console.CursorVisible = false;
 
             Console.WriteLine("\n  Live cells: {0}", logic.LiveCells); 
             Console.WriteLine("  BoardSize is {0}", BoardSize);
+            Console.SetCursorPosition(25, 1);
+            Console.WriteLine("Press P to pause and resume game");
+            Console.SetCursorPosition(25, 2);
+            Console.WriteLine("Press S to save game");
 
+            //draws game board || vertical lines
             for (int height = 5; height < 20 + BoardSize * BoardSize; height++)
             {
                 Console.SetCursorPosition(1, height);
@@ -63,28 +68,49 @@
                 Console.SetCursorPosition(width, 20 + BoardSize * BoardSize);
                 Console.Write("\u2580");
             }
-            //I should enter code to print the first seed here. I want it to be able to grow from the center.
-            //read and print logic.
+
+            //reads and prints logic.
             int Iteration = 0;
             logic.SetSeed(BoardSize);
+            //loops through iterations
             while(true)
             {
                 logic.PrintArray();
-                logic.NewGeneration();
                 Iteration++;
                 Console.SetCursorPosition(2, 3);
                 Console.WriteLine("Iteration NR: {0}", Iteration);
-                //switch(UserAction)
-                //{
-                //    case "p":
-                //        break;
-                //    default:
-                //        break;
-                //}
+                logic.NewGeneration();
                 Thread.Sleep(1000);
+
+                if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.S)
+                {
+                    Console.Clear();
+                    Console.SetCursorPosition(13, 5);
+                    Console.WriteLine("Save the game");
+                    break;
+                }
+                else if (Console.KeyAvailable && Console.ReadKey(true).Key != ConsoleKey.S)
+                {
+                    //You can pause and resume at this point. The following line resumes the loop
+                    Console.ReadKey(true);
+                }
+
             }
+            Console.ReadKey();
+
+            //stops the script
+            //while (!(Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.P))
+            //{
+            //    logic.PrintArray();
+            //    Iteration++;
+            //    Console.SetCursorPosition(2, 3);
+            //    Console.WriteLine("Iteration NR: {0}", Iteration);
+            //    logic.NewGeneration();
+            //    Thread.Sleep(1000);
+            //}
+
 
         }
-        
+
     }
 }

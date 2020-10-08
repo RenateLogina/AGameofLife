@@ -2,22 +2,26 @@
 namespace GameofLife
 {
     using System;
+    using System.Reflection.PortableExecutable;
     using System.Threading;
 
     public class GameLogic
     {
-        public int MyProperty { get; set; }
+        //public int MyProperty { get; set; }
         public int neighbours;
         //public int CellCount;
         Random random = new Random();
-        //pointerposition
+        //pointerposition when printing out the array
         public int xPos;
         public int yPos;
+        //board size
         public int SizeX;
         public int SizeY;
+        //amount of live cells at given iteration
         public int LiveCells;
-        //stores array values
+        //stores and resets Generation array values
         static string[,] Generation;
+
         //Sets the very first iteration of the game, randomly
         public void SetSeed(int boardSize)
         {
@@ -26,49 +30,55 @@ namespace GameofLife
             SizeY = 14 + boardSize * boardSize;
             Generation = new string[SizeY, SizeX];
 
-            //populates the first generation, randomly
-            string[] Filler = new string[] { "\u25CF", " " };
+            //populates the first generation with 2 characters, chosen randomly
+            string[] RandomFiller = new string[] { "\u25CF", " " };
             for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
             {
                 for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
                 {
-                    int CharacterIndex = random.Next(Filler.Length);
-                    Generation[RowIndex, ColIndex] = Filler[CharacterIndex];
+                    int CharacterIndex = random.Next(RandomFiller.Length);
+                    Generation[RowIndex, ColIndex] = RandomFiller[CharacterIndex];
                 }
             }
         }
+
+        //prints the Generation array
         public void PrintArray()
         {
-            //prints the array
+            //Sets starting point for printing, according to graphic location
             xPos = 2;
             yPos = 6;
-            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)//how tall
+            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)//prints row
             {
                 Console.SetCursorPosition(xPos, yPos);
-                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)//how wide
+                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)//prints individual cells in row (width)
                 {
                     //prints a single character
                     Console.Write(Generation[RowIndex, ColIndex]);
                 }
+                //sets the cursor position to next line after the row is printed
                 yPos++;
             }
+            //Counts the cells in the printed iteration
             CellCounter();
             Console.SetCursorPosition(13, 1);
-            Console.Write(LiveCells);
+            //Prints out the amount of cells
+            Console.Write(LiveCells +"   ");
         }
-        public void NewGeneration()//neadekvati dzemdee ssuunas
+
+        //Populates NewGen array with cells according to Generation cell positions and resets Generation array
+        public void NewGeneration()
         {
             string[,] NewGen = new string[SizeY, SizeX];
+            //Sifts through each cell, checking it's neighbours
             for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
             {
                 for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
                 {
+                    //Checks for neighbours of the cell
                     NeigbourCounter(RowIndex, ColIndex);
                     Console.SetCursorPosition(1, 28);
-                    //test if cellcount is correct and voila, it is
-                    //Console.WriteLine("cell nr {1},{2} has {0} neighbours", neighbours, RowIndex, ColIndex);
-                    //Thread.Sleep(1000);
-
+                    
                     //checks if cell is alive
                     if (Generation[RowIndex, ColIndex] == "\u25CF")
                     {
@@ -98,8 +108,11 @@ namespace GameofLife
                     }
                 }
             }
+            //resets the Generation array with new generation
             Generation = NewGen;
         }
+
+        //algorythm to check the neighbours of a particular cell
         public void NeigbourCounter(int RowIndex, int ColIndex)
         {
             neighbours = 0;
@@ -137,6 +150,8 @@ namespace GameofLife
                 neighbours++;
             }
         }
+
+        //Counts cells in the Generation array
         public void CellCounter()
         {
             LiveCells = 0;
