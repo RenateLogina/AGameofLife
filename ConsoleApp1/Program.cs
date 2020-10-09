@@ -6,7 +6,7 @@
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            GameUI gameUI = new GameUI();
+            GameManager gameUI = new GameManager();
             gameUI.GameMenu();
         }
     }

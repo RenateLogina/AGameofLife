@@ -1,22 +1,27 @@
 ﻿
 namespace GameofLife
 {
+    using Newtonsoft.Json;
     using System;
-    using System.Reflection.PortableExecutable;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Threading;
+    using System.IO;
+    using System.Text;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class GameLogic
     {
         //public int MyProperty { get; set; }
+        //amount of live cells at given iteration
+        public  int _liveCells;
         private int _neighbours;
         //board size
         private int _sizeX;
         private int _sizeY;
-        //amount of live cells at given iteration
-        public int LiveCells;
+        private string _cell = "\u25CF";
         //stores and resets Generation array values
-        private string[,] Generation;
+        private bool[,] Generation;
+        private bool[,] NewGen;
 
         //Sets the very first iteration of the game, randomly
         public void SetSeed(int boardSize)
@@ -25,33 +30,44 @@ namespace GameofLife
             _sizeX = 50 * boardSize - 3;
             _sizeY = 14 + boardSize * boardSize;
             Random random = new Random();
-            Generation = new string[_sizeY, _sizeX];
+            Generation = new bool[_sizeY, _sizeX];
 
             //populates the first generation with 2 characters, chosen randomly
-            string[] RandomFiller = new string[] { "\u25CF", " " };
+            bool[] RandomFiller = new bool[] { true, false };
             for (int RowIndex = 0; RowIndex < _sizeY; RowIndex++)
             {
                 for (int ColIndex = 0; ColIndex < _sizeX; ColIndex++)
                 {
-                    int CharacterIndex = random.Next(RandomFiller.Length);
-                    Generation[RowIndex, ColIndex] = RandomFiller[CharacterIndex];
+                    int boolIndex = random.Next(RandomFiller.Length);
+                    Generation[RowIndex, ColIndex] = RandomFiller[boolIndex];
                 }
             }
+            NewGen = Generation;
         }
 
         //prints the Generation array
-        public void PrintArray()
+        public string PrintArray()
         {
             //Sets starting point for printing, according to graphic location
             int xPos = 2;
             int yPos = 6;
+            //resets the Generation array with new generation
+            Generation = NewGen;
+
             for (int RowIndex = 0; RowIndex < _sizeY; RowIndex++)//prints row
             {
                 Console.SetCursorPosition(xPos, yPos);
                 for (int ColIndex = 0; ColIndex < _sizeX; ColIndex++)//prints individual cells in row (width)
                 {
-                    //prints a single character
-                    Console.Write(Generation[RowIndex, ColIndex]);
+                    //prints a cell character
+                    if (Generation[RowIndex, ColIndex])
+                    {
+                        Console.Write(_cell);
+                    }
+                    else
+                    {
+                        Console.Write(" ");
+                    }
                 }
                 //sets the cursor position to next line after the row is printed
                 yPos++;
@@ -60,13 +76,28 @@ namespace GameofLife
             CellCounter();
             Console.SetCursorPosition(13, 1);
             //Prints out the amount of cells
-            Console.Write(LiveCells +"   ");
+            Console.Write(_liveCells +"   ");
+            var sb = new StringBuilder(string.Empty);
+            for (var y = 0; y < _sizeY; y++)
+            {
+                sb.Append(",{");
+                for (var x = 0; x < _sizeX; x++)
+                {
+                    sb.AppendFormat("{0},", Generation[y, x]);
+                }
+                sb.Append("}");
+                sb.AppendLine();
+            }
+            sb.Replace(",}", "}").Remove(0, 1);
+            var result = sb.ToString();
+            //var result = $@"{{{JsonConvert.SerializeObject(Generation).Trim('[', ']').Replace("[", "{").Replace("]", "}")}}}";
+            return result;
         }
 
         //Populates NewGen array with cells according to Generation cell positions and resets Generation array
         public void NewGeneration()
         {
-            string[,] NewGen = new string[_sizeY, _sizeX];
+            NewGen = new bool[_sizeY, _sizeX];
             //Sifts through each cell, checking it's _neighbours
             for (int RowIndex = 0; RowIndex < _sizeY; RowIndex++)
             {
@@ -77,17 +108,17 @@ namespace GameofLife
                     Console.SetCursorPosition(1, 28);
                     
                     //checks if cell is alive
-                    if (Generation[RowIndex, ColIndex] == "\u25CF")
+                    if (Generation[RowIndex, ColIndex])
                     {
                         //if has less than 2 or more than 3 live _neighbours, it dies
                         if (_neighbours < 2 || _neighbours > 3)
                         {
-                            NewGen[RowIndex, ColIndex] = " ";
+                            NewGen[RowIndex, ColIndex] = false;
                         }
                         //else it lives on
                         else
                         {
-                            NewGen[RowIndex, ColIndex] = "\u25CF";
+                            NewGen[RowIndex, ColIndex] = true;
                         }
                     }
                     //if the cell is dead
@@ -95,18 +126,16 @@ namespace GameofLife
                     {
                         if (_neighbours == 3)
                         {
-                            NewGen[RowIndex, ColIndex] = "\u25CF";
+                            NewGen[RowIndex, ColIndex] = true;
                         }
                         //else it remains dead
                         else
                         {
-                            NewGen[RowIndex, ColIndex] = " ";
+                            NewGen[RowIndex, ColIndex] = false;
                         }
                     }
                 }
             }
-            //resets the Generation array with new generation
-            Generation = NewGen;
         }
 
         //algorythm to check the _neighbours of a particular cell
@@ -119,9 +148,9 @@ namespace GameofLife
             {
                 for (int Col = - 1; Col < 2; Col++)
                 {
-                    if (RowIndex + Row > -1 && ColIndex + Col > -1 && Row + RowIndex < _sizeY && ColIndex + Col < _sizeX && Generation[RowIndex + Row, ColIndex + Col] == "\u25CF")
+                    if (RowIndex + Row > -1 && ColIndex + Col > -1 && Row + RowIndex < _sizeY && ColIndex + Col < _sizeX && Generation[RowIndex + Row, ColIndex + Col])
                     {
-                        if (Row == 0 && Col == 0)//unfortunately faulty when using != WHYYY
+                        if (Row != 0 & Col != 0)//unfortunately faulty when using != WHYYY
                         {
                            //do nothing
                         }
@@ -130,62 +159,30 @@ namespace GameofLife
                             _neighbours++;
                         }
                     }
-
                 }
             }
-            //Check _neighbours for each cell during testing
-            //Console.SetCursorPosition(0, 0);
-            //Console.WriteLine("Cell nr {0},{1} has {2} _neighbours.", RowIndex, ColIndex, _neighbours);
-
-            //if (RowIndex > 0 && ColIndex > 0 && Generation[RowIndex - 1, ColIndex - 1] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}            
-            //if (RowIndex > 0 && Generation[RowIndex - 1, ColIndex] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
-            //if (RowIndex > 0 && ColIndex < _sizeX - 1 && Generation[RowIndex - 1, ColIndex + 1] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
-            //if (ColIndex > 0 && Generation[RowIndex, ColIndex - 1] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
-            //if (ColIndex < _sizeX - 1 && Generation[RowIndex, ColIndex + 1] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
-            //if (RowIndex < _sizeY - 1 && ColIndex > 0 && Generation[RowIndex + 1, ColIndex - 1] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
-            //if (RowIndex < _sizeY - 1 && Generation[RowIndex + 1, ColIndex] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
-            //if (RowIndex < _sizeY - 1 && ColIndex < _sizeX - 1 && Generation[RowIndex + 1, ColIndex + 1] == "\u25CF")
-            //{
-            //    _neighbours++;
-            //}
         }
 
         //Counts cells in the Generation array
-        public void CellCounter()
+        public int CellCounter()
         {
-            LiveCells = 0;
+            _liveCells = 0;
             for (int RowIndex = 0; RowIndex < _sizeY; RowIndex++)
             {
                 for (int ColIndex = 0; ColIndex < _sizeX; ColIndex++)
                 {
-                    if(Generation[RowIndex,ColIndex] == "\u25CF")
+                    if(Generation[RowIndex,ColIndex])
                     {
-                        LiveCells++;
+                        _liveCells++;
                     }
                 }
             }
+            return _liveCells;
 
         }
+        /// <summary>
+        /// Converts data to txt, saves file
+        /// </summary>
+        
     }
 }
