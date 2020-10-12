@@ -11,21 +11,21 @@
     public class GameManager
     {
         //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy user
-        
+
         private int _boardSize;
         private int Iteration;
         GameLogic gameLogic = new GameLogic();
-        
+
         public void GameMenu()
         {
             Console.SetWindowSize(155, 30);
             Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
                               "                                                        the\n" +
-                              "                                                   GAME OF LIFE\n"+
+                              "                                                   GAME OF LIFE\n" +
                               "\n\n                               Choose the prefferred board BoardSize by entering a number!\n" +
                               "\n                                                      1. Small" +
                               "\n                                                      2. Medium" +
-                              "\n                                                      3. Large"+
+                              "\n                                                      3. Large" +
                               "\n\n\n                                                  ENTER Q TO QUIT");
 
             Console.SetCursorPosition(59, 22);
@@ -52,7 +52,7 @@
 
             Console.CursorVisible = false;
 
-            Console.WriteLine("\n  Live cells: {0}", gameLogic._liveCells); 
+            Console.WriteLine("\n  Live cells: {0}", gameLogic._liveCells);
             Console.WriteLine("  BoardSize is {0}", _boardSize);
             Console.SetCursorPosition(25, 1);
             Console.WriteLine("Press P to pause and resume game");
@@ -69,7 +69,7 @@
             }
             //draws game board --- horizontal lines
             for (int width = 1; width < 50 * _boardSize; width++)
-            {                
+            {
                 Console.SetCursorPosition(width, 5);
                 Console.Write("\u2584");
                 Console.SetCursorPosition(width, 20 + _boardSize * _boardSize);
@@ -80,19 +80,19 @@
             Iteration = 0;
             gameLogic.SetSeed(_boardSize);
             //loops through iterations
-            while(true)
+            while (true)
             {
                 gameLogic.PrintArray();
                 Iteration++;
                 Console.SetCursorPosition(2, 3);
                 Console.WriteLine("Iteration NR: {0}", Iteration);
-                
+
                 Thread.Sleep(1000);
 
                 //checks if user presses any key to pause or save
                 if (Console.KeyAvailable)
                 {
-                    if(Console.ReadKey(true).Key == ConsoleKey.S)
+                    if (Console.ReadKey(true).Key == ConsoleKey.S)
                     {
                         Console.Clear();
                         Console.SetCursorPosition(13, 5);
@@ -109,7 +109,7 @@
                             SaveGame();
                             break;
                         }
-                    }                   
+                    }
                 }
                 gameLogic.NewGeneration();
             }
@@ -119,51 +119,64 @@
         {
 
         }
+
         private void SaveGame()
         {
-            GameProgress gameProgress = new GameProgress() { GenerationArray = gameLogic.PrintArray(), LiveCellCount = gameLogic._liveCells, BoardSize = _boardSize,  Iteration = Iteration };
+
+            GameProgress gameProgress = new GameProgress()
+            { GenerationArray = gameLogic.PrintArray(), LiveCellCount = gameLogic._liveCells, BoardSize = _boardSize, Iteration = Iteration };
+
             string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
             DataSerializer dataSerializer = new DataSerializer();
             GameProgress g = null;
+            //Json serialization and deserialization
+            dataSerializer.JsonSerialize(gameProgress, filePath);
+            g = dataSerializer.JsonDeserialize(typeof(GameProgress), filePath) as GameProgress;
 
-            dataSerializer.BinarySerialize(gameProgress, filePath);
+            ////xml serialization and deserialization
+            //dataSerializer.XmLSerialize(typeof(GameProgress), gameProgress, filePath);
+            //g = dataSerializer.XmlDeserialize(typeof(GameProgress), filePath) as GameProgress;
 
-            g = dataSerializer.BinaryDeserialize(filePath) as GameProgress;
+            ////binary serialization and deserialization
+            //dataSerializer.BinarySerialize(gameProgress, filePath);
+            //g = dataSerializer.BinaryDeserialize(filePath) as GameProgress;
 
+            //testing  deserialization- are correct values saved
             Console.Clear();
             Console.WriteLine("Board size is: {0}", g.BoardSize);
             Console.WriteLine("Live cell count is: {0}", g.LiveCellCount);
             Console.WriteLine("Iteration is: {0}", g.Iteration);
             Console.WriteLine("Array is: {0}", g.GenerationArray);
 
-            //using (StreamWriter sw = File.CreateText($"save.sav"))
-            //{
-            // variants ar objekta serializaaciju
+            //    //using (StreamWriter sw = File.CreateText($"save.sav"))
+            //    //{
+            //    // variants ar objekta serializaaciju
 
-            //variants ar string builder
-            //var sb = new StringBuilder(string.Empty);
-            //for (var x = 0; x < _sizeX; x++)
-            //{
-            //    sb.Append(",{");
-            //    for (var y = 0; y < _sizeY; y++)
-            //    {
-            //        sb.Append($"{Generation[x, y]},");
-            //    }
-            //    sb.Append("}");
+            //    //variants ar string builder
+            //    //var sb = new StringBuilder(string.Empty);
+            //    //for (var x = 0; x < _sizeX; x++)
+            //    //{
+            //    //    sb.Append(",{");
+            //    //    for (var y = 0; y < _sizeY; y++)
+            //    //    {
+            //    //        sb.Append($"{Generation[x, y]},");
+            //    //    }
+            //    //    sb.Append("}");
+            //    //}
+            //    //sb.Replace(",}", "}").Remove(0, 1);
+            //    //var SBresult = sb.ToString();
+
+            //    //sw.WriteLine(_liveCells);
+            //    //sw.WriteLine(result);
+
+            //    //    Console.Clear();
+            //    //    Console.WriteLine("Iteration: {0}", Iteration);
+            //    //    Console.WriteLine("Live cells: {0}", gameLogic._liveCells);
+            //    //    Console.WriteLine(gameLogic.PrintArray());
+
+            //    //}
             //}
-            //sb.Replace(",}", "}").Remove(0, 1);
-            //var SBresult = sb.ToString();
 
-            //sw.WriteLine(_liveCells);
-            //sw.WriteLine(result);
-
-            //    Console.Clear();
-            //    Console.WriteLine("Iteration: {0}", Iteration);
-            //    Console.WriteLine("Live cells: {0}", gameLogic._liveCells);
-            //    Console.WriteLine(gameLogic.PrintArray());
-
-            //}
         }
-
     }
 }
