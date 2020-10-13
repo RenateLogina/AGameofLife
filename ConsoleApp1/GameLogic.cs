@@ -16,8 +16,8 @@ namespace GameofLife
         public int Iteration;
         private int _neighbours;
         //board size
-        private int _sizeX;
-        private int _sizeY;
+        public int _sizeX;
+        public int _sizeY;
         
         //stores and resets Generation array values
         public bool[,] Generation;
@@ -49,9 +49,6 @@ namespace GameofLife
         //prints the Generation array
         public void PrintArray()
         {
-            GameManager gameManager = new GameManager();
-            _sizeX = 50 * gameManager.boardSize - 3;
-            _sizeY = 14 + gameManager.boardSize * gameManager.boardSize;
             //Sets starting point for printing, according to graphic location
             int xPos = 2;
             int yPos = 6;
@@ -100,9 +97,6 @@ namespace GameofLife
         //Populates NewGen array with cells according to Generation cell positions and resets Generation array
         public void NewGeneration()
         {
-            GameManager gameManager = new GameManager();
-            _sizeX = 50 * gameManager.boardSize - 3;
-            _sizeY = 14 + gameManager.boardSize * gameManager.boardSize;
             NewGen = new bool[_sizeY, _sizeX];
             //Sifts through each cell, checking it's _neighbours
             for (int RowIndex = 0; RowIndex < _sizeY; RowIndex++)

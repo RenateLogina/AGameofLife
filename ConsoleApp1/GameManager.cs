@@ -129,7 +129,8 @@
             GameProgress g = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
             if (File.Exists(filePath))
             {
-                
+                gameLogic._sizeX = g.SizeX;
+                gameLogic._sizeY = g.SizeY;
                 boardSize = g.BoardSize;
                 gameLogic.Iteration = g.Iteration;
                 gameLogic._liveCells = g.LiveCellCount;
@@ -151,7 +152,7 @@
         private void SaveGame()
         {
             GameProgress gameProgress = new GameProgress
-            { GenerationArray = gameLogic.Generation, LiveCellCount = gameLogic._liveCells, BoardSize = boardSize, Iteration = gameLogic.Iteration };
+            { GenerationArray = gameLogic.Generation, LiveCellCount = gameLogic._liveCells, BoardSize = boardSize, Iteration = gameLogic.Iteration, SizeX = gameLogic._sizeX, SizeY =gameLogic._sizeY };
 
             string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
             string result = JsonConvert.SerializeObject(gameProgress);

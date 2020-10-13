@@ -9,5 +9,7 @@
         public int LiveCellCount { get; set; }
         public int BoardSize { get; set; }
         public int Iteration { get; set; }
+        public int SizeX { get; set; }
+        public int SizeY { get; set; }
     }
 }
