@@ -82,7 +82,7 @@
             //loops through iterations
             while (true)
             {
-                
+                GameUI gameUI = new GameUI();
                 Console.SetCursorPosition(13, 1);
                 Console.Write(gameLogic.LiveCells + "   ");
                 Console.SetCursorPosition(2, 3);
@@ -96,19 +96,34 @@
                 {
                     if (Console.ReadKey(true).Key == ConsoleKey.S)
                     {
+                        
                         Console.Clear();
                         Console.SetCursorPosition(13, 5);
-                        Console.WriteLine("Save the game");
+                        Console.WriteLine("The game is saved");
+                        Console.WriteLine("         Press R to return to menu");
+                        SaveGame();
+                        if (Console.ReadKey(true).Key == ConsoleKey.R)
+                        {
+                            gameUI.GameisSaved();// doesn't save properly!!! how to fix?
+                            GameMenu();
+                        }
                         break;
                     }
                     else
                     {
                         if (Console.ReadKey(true).Key == ConsoleKey.S)
                         {
+                            
                             Console.Clear();
                             Console.SetCursorPosition(13, 5);
-                            Console.WriteLine("Save the game");
+                            Console.WriteLine("The game is saved");
+                            Console.WriteLine("         Press R to return to menu");
                             SaveGame();
+                            if (Console.ReadKey(true).Key == ConsoleKey.R)
+                            {
+                                Console.Clear();
+                                GameMenu();
+                            }
                             break;
                         }
                     }
@@ -135,22 +150,11 @@
                 gameLogic.Generation = g.GenerationArray;
                 gameLogic.NewGen = g.GenerationArray;
             }
-
-            //test if values are assigned
-            //Console.Clear();
-            //Console.WriteLine("Board size is: {0}", _BoardSize);
-            //Console.WriteLine("Live cell count is: {0}", gameLogic.LiveCells);
-            //Console.WriteLine("Iteration is: {0}", gameLogic.Iteration);
-            //Console.WriteLine("Array is: {0}", $@"{{{JsonConvert.SerializeObject(gameLogic.NewGen).Trim('[', ']').Replace("[", "{").Replace("]", "}")}}}");
-
-            //Console.ReadKey();
-            //GameBoard();
-
         }
         /// <summary>
         /// Saves current values to file
         /// </summary>
-        private void SaveGame()
+        public void SaveGame()
         {
             GameProgress gameProgress = new GameProgress
             { GenerationArray = gameLogic.Generation, LiveCellCount = gameLogic.LiveCells, BoardSize = BoardSize, Iteration = gameLogic.Iteration, SizeX = gameLogic.SizeX, SizeY =gameLogic.SizeY };

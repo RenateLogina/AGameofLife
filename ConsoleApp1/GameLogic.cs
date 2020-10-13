@@ -76,24 +76,7 @@ namespace GameofLife
                 //sets the cursor position to next line after the row is printed
                 yPos++;
             }
-            //Counts the cells in the printed iteration
             CellCounter();
-
-            //var sb = new StringBuilder(string.Empty);
-            //for (var y = 0; y < SizeY; y++)
-            //{
-            //    sb.Append(",{");
-            //    for (var x = 0; x < SizeX; x++)
-            //    {
-            //        sb.AppendFormat("{0},", Generation[y, x]);
-            //    }
-            //    sb.Append("}");
-            //    sb.AppendLine();
-            //}
-            //sb.Replace(",}", "}").Remove(0, 1);
-            //var result = sb.ToString();
-            //var result = $@"{{{JsonConvert.SerializeObject(Generation).Trim('[', ']').Replace("[", "{").Replace("]", "}")}}}";
-            //return result;
         }
 
         /// <summary>
