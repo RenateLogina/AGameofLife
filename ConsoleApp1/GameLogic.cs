@@ -7,26 +7,27 @@ namespace GameofLife
     using System.Text;
 
     /// <summary>
-    /// 
+    /// Game mechanics - setting the first seeds, generating new iteration, 
+    /// counting iterations, counting neighbours, counting cells alive
     /// </summary>
     public class GameLogic
     {
-        //public int MyProperty { get; set; }
-        //amount of live cells at given iteration
         public  int _liveCells;
+        public int Iteration;
         private int _neighbours;
         //board size
         private int _sizeX;
         private int _sizeY;
-        private string _cell = "\u25CF";
+        
         //stores and resets Generation array values
-        private bool[,] Generation;
-        private bool[,] NewGen;
+        public bool[,] Generation;
+        public bool[,] NewGen;
 
         //Sets the very first iteration of the game, randomly
         public void SetSeed(int boardSize)
         {
             //set a 2D array size, based on board size
+            Iteration = 1;
             _sizeX = 50 * boardSize - 3;
             _sizeY = 14 + boardSize * boardSize;
             Random random = new Random();
@@ -46,11 +47,15 @@ namespace GameofLife
         }
 
         //prints the Generation array
-        public string PrintArray()
+        public void PrintArray()
         {
+            GameManager gameManager = new GameManager();
+            _sizeX = 50 * gameManager.boardSize - 3;
+            _sizeY = 14 + gameManager.boardSize * gameManager.boardSize;
             //Sets starting point for printing, according to graphic location
             int xPos = 2;
             int yPos = 6;
+
             //resets the Generation array with new generation
             Generation = NewGen;
 
@@ -62,7 +67,7 @@ namespace GameofLife
                     //prints a cell character
                     if (Generation[RowIndex, ColIndex])
                     {
-                        Console.Write(_cell);
+                        Console.Write("\u25CF");
                     }
                     else
                     {
@@ -74,29 +79,30 @@ namespace GameofLife
             }
             //Counts the cells in the printed iteration
             CellCounter();
-            Console.SetCursorPosition(13, 1);
-            //Prints out the amount of cells
-            Console.Write(_liveCells +"   ");
-            var sb = new StringBuilder(string.Empty);
-            for (var y = 0; y < _sizeY; y++)
-            {
-                sb.Append(",{");
-                for (var x = 0; x < _sizeX; x++)
-                {
-                    sb.AppendFormat("{0},", Generation[y, x]);
-                }
-                sb.Append("}");
-                sb.AppendLine();
-            }
-            sb.Replace(",}", "}").Remove(0, 1);
-            var result = sb.ToString();
+
+            //var sb = new StringBuilder(string.Empty);
+            //for (var y = 0; y < _sizeY; y++)
+            //{
+            //    sb.Append(",{");
+            //    for (var x = 0; x < _sizeX; x++)
+            //    {
+            //        sb.AppendFormat("{0},", Generation[y, x]);
+            //    }
+            //    sb.Append("}");
+            //    sb.AppendLine();
+            //}
+            //sb.Replace(",}", "}").Remove(0, 1);
+            //var result = sb.ToString();
             //var result = $@"{{{JsonConvert.SerializeObject(Generation).Trim('[', ']').Replace("[", "{").Replace("]", "}")}}}";
-            return result;
+            //return result;
         }
 
         //Populates NewGen array with cells according to Generation cell positions and resets Generation array
         public void NewGeneration()
         {
+            GameManager gameManager = new GameManager();
+            _sizeX = 50 * gameManager.boardSize - 3;
+            _sizeY = 14 + gameManager.boardSize * gameManager.boardSize;
             NewGen = new bool[_sizeY, _sizeX];
             //Sifts through each cell, checking it's _neighbours
             for (int RowIndex = 0; RowIndex < _sizeY; RowIndex++)
