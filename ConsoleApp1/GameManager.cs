@@ -8,26 +8,12 @@
     {
         //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy user
         public int BoardSize;
-        private string userAction;        
+                
         GameLogic gameLogic = new GameLogic();
-        /// <summary>
-        /// Prints main game menu
-        /// </summary>
-        public void GameMenu()
+        GameUI gameUI = new GameUI();
+        public void StartGame()
         {
-            Console.SetWindowSize(155, 30);
-            Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
-                              "                                                        the\n" +
-                              "                                                   GAME OF LIFE\n" +
-                              "\n                                            Enter L to load saved game\n" +
-                              "\n\n                               Choose the prefferred board BoardSize by entering a number!\n" +
-                              "\n                                                      1. Small" +
-                              "\n                                                      2. Medium" +
-                              "\n                                                      3. Large" +
-                              "\n\n\n                                                  ENTER Q TO QUIT");
-
-            Console.SetCursorPosition(59, 22);
-            userAction = Console.ReadLine().ToLower();
+            string userAction = gameUI.GameMenu();
             switch (userAction)
             {
                 case "1":
@@ -50,6 +36,7 @@
                     return;
             }
         }
+
         /// <summary>
         /// prints gameboard borders and any UI information of the particular game
         /// </summary>
@@ -83,11 +70,11 @@
             while (true)
             {
                 GameUI gameUI = new GameUI();
-                Console.SetCursorPosition(13, 1);
-                Console.Write(gameLogic.LiveCells + "   ");
                 Console.SetCursorPosition(2, 3);
                 Console.WriteLine("Iteration NR: {0}", gameLogic.Iteration);
                 gameLogic.PrintArray();
+                Console.SetCursorPosition(13, 1);
+                Console.Write(gameLogic.LiveCells + "   ");
 
                 Thread.Sleep(1000);
 
@@ -105,7 +92,7 @@
                         if (Console.ReadKey(true).Key == ConsoleKey.R)
                         {
                             gameUI.GameisSaved();// doesn't save properly!!! how to fix?
-                            GameMenu();
+                            StartGame();
                         }
                         break;
                     }
@@ -122,7 +109,7 @@
                             if (Console.ReadKey(true).Key == ConsoleKey.R)
                             {
                                 Console.Clear();
-                                GameMenu();
+                                StartGame();
                             }
                             break;
                         }

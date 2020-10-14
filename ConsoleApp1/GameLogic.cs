@@ -44,6 +44,7 @@ namespace GameofLife
                 }
             }
             NewGen = Generation;
+            CellCounter();
         }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace GameofLife
 
             //resets the Generation array with new generation
             Generation = NewGen;
-
+            
             for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)//prints row
             {
                 Console.SetCursorPosition(xPos, yPos);
@@ -76,7 +77,7 @@ namespace GameofLife
                 //sets the cursor position to next line after the row is printed
                 yPos++;
             }
-            CellCounter();
+            
         }
 
         /// <summary>
@@ -124,6 +125,7 @@ namespace GameofLife
                     }
                 }
             }
+            CellCounter();
         }
 
         /// <summary>
@@ -153,10 +155,7 @@ namespace GameofLife
                     }
                 }
             }
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine("Cell nr {0},{1} has {2} neighbours.", RowIndex, ColIndex, neighbours);
-        }
-        
+        }        
 
         /// <summary>
         /// Counts cells in the Generation array
@@ -175,8 +174,8 @@ namespace GameofLife
                     }
                 }
             }
-            return LiveCells;
 
+            return LiveCells;
         }        
     }
 }
