@@ -2,6 +2,8 @@
 namespace GameofLife
 {
     using System;
+    using System.Text;
+
     /// <summary>
     /// Game mechanics - setting the first seeds, generating new iteration, 
     /// counting iterations, counting neighbours, counting cells alive
@@ -9,6 +11,7 @@ namespace GameofLife
     public class GameLogic
     {
         #region variables
+        public int BoardSize;
         public int LiveCells;
         public int Iteration;
         private int neighbours;
@@ -43,37 +46,45 @@ namespace GameofLife
                     Generation[RowIndex, ColIndex] = RandomFiller[boolIndex];
                 }
             }
-            //NewGen = Generation;
+            CellCounter();
         }
 
         /// <summary>
-        /// prints the Generation array
+        /// prints the Generation array and boarders using StringBuilder
         /// </summary>
-        public void PrintArray()
+        public string PrintArray()
         {
-            //Sets starting point for printing, according to graphic location
-            int xPos = 2;
-            int yPos = 6;
-            
-            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)//prints row
+            var sb = new StringBuilder(string.Empty);
+            sb.Append(" ");
+            for (int width = 1; width < 50 * BoardSize; width++)
             {
-                Console.SetCursorPosition(xPos, yPos);
-                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)//prints individual cells in row (width)
+                sb.Append("\u2584");
+            }
+            sb.AppendLine();
+            for (var y = 0; y < SizeY; y++)
+            {
+                sb.Append(" \u2588");
+                for (var x = 0; x < SizeX; x++)
                 {
-                    //prints a cell character
-                    if (Generation[RowIndex, ColIndex])
+                    if(Generation[y, x])
                     {
-                        Console.Write("\u25CF");
+                        sb.Append("\u25CF");
                     }
                     else
                     {
-                        Console.Write(" ");
+                        sb.Append(" ");
                     }
                 }
-                //sets the cursor position to next line after the row is printed
-                yPos++;
+                sb.Append("\u2588");
+                sb.AppendLine();
             }
-            CellCounter();
+            sb.Append(" ");
+            for (int width = 1; width < 50 * BoardSize; width++)
+            {
+                sb.Append("\u2580");
+            }
+            var result = sb.ToString();
+            return result;
         }
 
         /// <summary>
@@ -121,7 +132,8 @@ namespace GameofLife
                     }
                 }
             }
-            Generation = NewGen;  
+            Generation = NewGen;
+            CellCounter();
         }
 
         /// <summary>
