@@ -9,11 +9,11 @@
         //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy user
         public int BoardSize;
                 
-        GameLogic gameLogic = new GameLogic();
-        GameUI gameUI = new GameUI();
+        GameLogic gL = new GameLogic();
+        GameUI uI = new GameUI();
         public void StartGame()
         {
-            string userAction = gameUI.GameMenu();
+            string userAction = uI.GameMenu();
             switch (userAction)
             {
                 case "1":
@@ -21,7 +21,7 @@
                 case "3":
                     Console.Clear();
                     BoardSize = Convert.ToInt32(userAction);
-                    gameLogic.SetSeed(BoardSize);
+                    gL.SetSeed(BoardSize);
                     GameBoard();
                     break;
                 case "l":
@@ -69,12 +69,14 @@
             //loops through iterations
             while (true)
             {
-                GameUI gameUI = new GameUI();
+                GameUI uI = new GameUI();
+                
+                gL.PrintArray();
                 Console.SetCursorPosition(2, 3);
-                Console.WriteLine("Iteration NR: {0}", gameLogic.Iteration);
-                gameLogic.PrintArray();
+                Console.WriteLine("Iteration NR: {0}", gL.Iteration);
+                
                 Console.SetCursorPosition(13, 1);
-                Console.Write(gameLogic.LiveCells + "   ");
+                Console.Write(gL.LiveCells + "   ");
 
                 Thread.Sleep(1000);
 
@@ -91,7 +93,7 @@
                         SaveGame();
                         if (Console.ReadKey(true).Key == ConsoleKey.R)
                         {
-                            gameUI.GameisSaved();// doesn't save properly!!! how to fix?
+                            uI.GameisSaved();// doesn't save properly!!! how to fix?
                             StartGame();
                         }
                         break;
@@ -115,8 +117,8 @@
                         }
                     }
                 }
-                gameLogic.Iteration++;
-                gameLogic.NewGeneration();
+                gL.Iteration++;
+                gL.NewGeneration();
             }
             Console.ReadKey();
         }
@@ -129,13 +131,12 @@
             GameProgress g = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
             if (File.Exists(filePath))
             {
-                gameLogic.SizeX = g.SizeX;
-                gameLogic.SizeY = g.SizeY;
+                gL.SizeX = g.SizeX;
+                gL.SizeY = g.SizeY;
                 BoardSize = g.BoardSize;
-                gameLogic.Iteration = g.Iteration;
-                gameLogic.LiveCells = g.LiveCellCount;
-                gameLogic.Generation = g.GenerationArray;
-                gameLogic.NewGen = g.GenerationArray;
+                gL.Iteration = g.Iteration;
+                gL.LiveCells = g.LiveCellCount;
+                gL.Generation = g.GenerationArray;
             }
         }
         /// <summary>
@@ -144,7 +145,7 @@
         public void SaveGame()
         {
             GameProgress gameProgress = new GameProgress
-            { GenerationArray = gameLogic.Generation, LiveCellCount = gameLogic.LiveCells, BoardSize = BoardSize, Iteration = gameLogic.Iteration, SizeX = gameLogic.SizeX, SizeY =gameLogic.SizeY };
+            { GenerationArray = gL.Generation, LiveCellCount = gL.LiveCells, BoardSize = BoardSize, Iteration = gL.Iteration, SizeX = gL.SizeX, SizeY =gL.SizeY };
 
             string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
             string result = JsonConvert.SerializeObject(gameProgress);

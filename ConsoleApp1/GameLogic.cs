@@ -43,8 +43,7 @@ namespace GameofLife
                     Generation[RowIndex, ColIndex] = RandomFiller[boolIndex];
                 }
             }
-            NewGen = Generation;
-            CellCounter();
+            //NewGen = Generation;
         }
 
         /// <summary>
@@ -55,9 +54,6 @@ namespace GameofLife
             //Sets starting point for printing, according to graphic location
             int xPos = 2;
             int yPos = 6;
-
-            //resets the Generation array with new generation
-            Generation = NewGen;
             
             for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)//prints row
             {
@@ -77,7 +73,7 @@ namespace GameofLife
                 //sets the cursor position to next line after the row is printed
                 yPos++;
             }
-            
+            CellCounter();
         }
 
         /// <summary>
@@ -125,7 +121,7 @@ namespace GameofLife
                     }
                 }
             }
-            CellCounter();
+            Generation = NewGen;  
         }
 
         /// <summary>
