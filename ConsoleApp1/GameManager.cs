@@ -6,9 +6,7 @@
     using System.IO;
     public class GameManager
     {
-        //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy user
-        
-                
+        //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy user     
         GameLogic gL = new GameLogic();
         GameUI uI = new GameUI();
         public void StartGame()
@@ -19,18 +17,15 @@
                 case "1":
                 case "2":
                 case "3":
-                    Console.Clear();
                     gL.BoardSize = Convert.ToInt32(userAction);
                     gL.SetSeed(gL.BoardSize);
-                    GameBoard();
+                    GameBoardUI();
                     break;
                 case "l":
-                    Console.Clear();
                     LoadGame();
-                    GameBoard();
+                    GameBoardUI();
                     break;
                 default:
-                    Console.Clear();
                     break;
                 case "q":
                     return;
@@ -38,29 +33,22 @@
         }
 
         /// <summary>
-        /// prints gameboard borders and any UI information of the particular game
+        /// prints gameboard borders UI information of the particular game and loops the game :O
         /// </summary>
-        private void GameBoard()
+        private void GameBoardUI()
         {
+            Console.Clear();
             Console.CursorVisible = false;
-            Console.WriteLine("\n  Live cells:");
-            Console.WriteLine("  BoardSize is {0}", gL.BoardSize);
-            Console.SetCursorPosition(25, 1);
-            Console.WriteLine("Press P to pause and resume game");
-            Console.SetCursorPosition(25, 2);
-            Console.WriteLine("Press S to save game");
+            Console.WriteLine("  Press P to pause and resume game");
+            Console.WriteLine("  Press S to save game");
+            //Console.WriteLine("\n  Live cells:");
+            Console.WriteLine("  BoardSize is {0}", gL.BoardSize);            
 
             //loops through iterations
             while (true)
             {
-                GameUI uI = new GameUI();
-                Console.SetCursorPosition(0, 6);
+                Console.SetCursorPosition(0, 3);
                 Console.Write(gL.PrintArray());
-                Console.SetCursorPosition(2, 3);
-                Console.WriteLine("Iteration NR: {0}", gL.Iteration);
-                
-                Console.SetCursorPosition(13, 1);
-                Console.Write(gL.LiveCells + "   ");
 
                 Thread.Sleep(1000);
 

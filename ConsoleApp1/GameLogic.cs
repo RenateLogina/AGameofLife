@@ -7,6 +7,7 @@ namespace GameofLife
     /// <summary>
     /// Game mechanics - setting the first seeds, generating new iteration, 
     /// counting iterations, counting neighbours, counting cells alive
+    /// This class contains no console commands!! :)
     /// </summary>
     public class GameLogic
     {
@@ -55,6 +56,9 @@ namespace GameofLife
         public string PrintArray()
         {
             var sb = new StringBuilder(string.Empty);
+            sb.AppendFormat("  Live cells: {0}      ", LiveCells);
+            sb.AppendFormat("Iteration NR: {0}", Iteration);
+            sb.AppendLine();
             sb.Append(" ");
             for (int width = 1; width < 50 * BoardSize; width++)
             {
