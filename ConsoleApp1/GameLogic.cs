@@ -135,25 +135,28 @@ namespace GameofLife
         {
             neighbours = 0;
 
-            //loops through a 3x3 square
+            //loops through a 3x3 square, ignores diagonal dots!!!! :O
             for (int Row = -1; Row < 2; Row++)
             {
-                for (int Col = - 1; Col < 2; Col++)
+                for (int Col = -1; Col < 2; Col++)
                 {
-                    if (RowIndex + Row > -1 && ColIndex + Col > -1 && Row + RowIndex < SizeY && ColIndex + Col < SizeX && Generation[RowIndex + Row, ColIndex + Col])
+                    if (RowIndex + Row > -1 && ColIndex + Col > -1 && Row + RowIndex < SizeY && ColIndex + Col < SizeX)
                     {
-                        if (Row != 0 & Col != 0)//unfortunately faulty when using != WHYYY
+                        if (Row == 0 && Col == 0)
                         {
-                           //do nothing
+                            //do nothing
                         }
-                        else
+                        else if (Generation[RowIndex + Row, ColIndex + Col])
                         {
                             neighbours++;
                         }
                     }
                 }
             }
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("Cell nr {0},{1} has {2} neighbours.", RowIndex, ColIndex, neighbours);
         }
+        
 
         /// <summary>
         /// Counts cells in the Generation array
