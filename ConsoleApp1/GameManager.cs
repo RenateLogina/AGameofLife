@@ -9,6 +9,8 @@
         //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy user     
         GameLogic gL = new GameLogic();
         GameUI uI = new GameUI();
+        Serializer ser = new Serializer();
+        GameProgress gP = new GameProgress();
         public void StartGame()
         {
             string userAction = uI.GameMenu();
@@ -19,11 +21,13 @@
                 case "3":
                     gL.BoardSize = Convert.ToInt32(userAction);
                     gL.SetSeed(gL.BoardSize);
-                    GameBoardUI();
+                    uI.GameHeader(gL.BoardSize);
+                    GameLoop();
                     break;
                 case "l":
                     LoadGame();
-                    GameBoardUI();
+                    uI.GameHeader(gL.BoardSize);
+                    GameLoop();
                     break;
                 default:
                     break;
@@ -35,21 +39,13 @@
         /// <summary>
         /// prints gameboard borders UI information of the particular game and loops the game :O
         /// </summary>
-        private void GameBoardUI()
+        private void GameLoop()
         {
-            Console.Clear();
-            Console.CursorVisible = false;
-            Console.WriteLine("  Press P to pause and resume game");
-            Console.WriteLine("  Press S to save game");
-            //Console.WriteLine("\n  Live cells:");
-            Console.WriteLine("  BoardSize is {0}", gL.BoardSize);            
-
             //loops through iterations
             while (true)
             {
                 Console.SetCursorPosition(0, 3);
                 Console.Write(gL.PrintArray());
-
                 Thread.Sleep(1000);
 
                 //checks if user presses any key to pause or save
@@ -59,13 +55,15 @@
                     {
                         
                         Console.Clear();
+                        ser.SaveGame(gL.Generation, gL.SizeX, gL.SizeY, gL.Iteration, gL.LiveCells, gL.BoardSize);
                         Console.SetCursorPosition(13, 5);
+                        
                         Console.WriteLine("The game is saved");
                         Console.WriteLine("         Press R to return to menu");
-                        SaveGame();
                         if (Console.ReadKey(true).Key == ConsoleKey.R)
                         {
-                            uI.GameisSaved();// doesn't save properly!!! how to fix?
+                            //uI.GameisSaved();// doesn't save properly!!! how to fix?
+                            Console.Clear();
                             StartGame();
                         }
                         break;
@@ -79,7 +77,7 @@
                             Console.SetCursorPosition(13, 5);
                             Console.WriteLine("The game is saved");
                             Console.WriteLine("         Press R to return to menu");
-                            SaveGame();
+                            ser.SaveGame(gL.Generation, gL.SizeX, gL.SizeY, gL.Iteration, gL.LiveCells,gL.BoardSize);
                             if (Console.ReadKey(true).Key == ConsoleKey.R)
                             {
                                 Console.Clear();
