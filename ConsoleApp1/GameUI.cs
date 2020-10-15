@@ -6,7 +6,7 @@ namespace GameofLife
 {
     class GameUI
     {
-        GameLogic gL = new GameLogic();
+        GameLogic gameLogic = new GameLogic();
         public string UserAction;
 
         /// <summary>
@@ -30,15 +30,18 @@ namespace GameofLife
             UserAction = Console.ReadLine().ToLower();
             return UserAction;
         }
-        public void GameHeader(int boardSize)
+
+        /// <summary>
+        /// Describes main menu actions available during game
+        /// </summary>
+        public void GameHeader()
         {
             Console.Clear();
             Console.CursorVisible = false;
             Console.WriteLine("  Press P to pause and resume game");
             Console.WriteLine("  Press S to save game");
-            //Console.WriteLine("\n  Live cells:");
-            Console.WriteLine("  BoardSize is {0}", boardSize);
         }
+
         /// <summary>
         /// supposed to save the game. Doesn't save properly for some reason. :/
         /// </summary>
@@ -49,12 +52,13 @@ namespace GameofLife
             Console.SetCursorPosition(13, 5);
             Console.WriteLine("The game is saved");
             Console.WriteLine("         Press R to return to menu");
-            gameManager.SaveGame();
+            //gameManager.SaveGame();
             if (Console.ReadKey(true).Key == ConsoleKey.R)
             {
                 Console.Clear();
                 gameManager.StartGame();
             }
+
         }
     }
 }

@@ -1,39 +1,38 @@
 ﻿namespace GameofLife
 {
     using Newtonsoft.Json;
+    using System;
     using System.IO;
     public class Serializer
     {
-        GameLogic gL = new GameLogic();
-        public void SaveGame(bool[,]generation, int sizeX, int sizeY, int iteration, int liveCells, int boardSize)
-        {
-            
-            GameProgress gameProgress = new GameProgress
-            { GenerationArray = generation, 
-                LiveCellCount = liveCells, 
-                BoardSize = boardSize, 
-                Iteration = iteration, 
-                SizeX = sizeX, 
-                SizeY = sizeY };
+        GameLogic gameLogic = new GameLogic();
 
-            string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
+        public void Serialize(GameProgress gameProgress, string filePath)
+        {
             string result = JsonConvert.SerializeObject(gameProgress);
-            if (File.Exists(filePath)) File.Delete(filePath);
+
+            if (File.Exists(filePath))
+            { 
+                File.Delete(filePath); 
+            } 
+
             File.WriteAllText(filePath, result);
         }
-        public void LoadGame(bool[,] generation, int sizeX, int sizeY, int iteration, int liveCells, int boardSize)
+
+        public GameLogic Deserialize(string filePath)
         {
-            string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
-            GameProgress g = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
-            if (File.Exists(filePath))
+            GameProgress gameProgress = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
+            if (File.Exists(filePath)) // I should move this to manager
             {
-                gL.SizeX = g.SizeX;
-                gL.SizeY = g.SizeY;
-                gL.BoardSize = g.BoardSize;
-                gL.Iteration = g.Iteration;
-                gL.LiveCells = g.LiveCellCount;
-                gL.Generation = g.GenerationArray;
+                gameLogic.Columns = gameProgress.Columns;
+                gameLogic.Rows = gameProgress.Rows;
+                gameLogic.BoardSize = gameProgress.BoardSize;
+                gameLogic.Iteration = gameProgress.Iteration;
+                gameLogic.LiveCells = gameProgress.LiveCells;
+                gameLogic.Generation = gameProgress.GenerationArray;
             }
+
+            return gameLogic; //this should only return gameProgress
         }
     }
 }

@@ -6,10 +6,10 @@
     public class GameProgress
     {
         public bool[,] GenerationArray { get; set; }
-        public int LiveCellCount { get; set; }
+        public int LiveCells { get; set; }
         public int BoardSize { get; set; }
         public int Iteration { get; set; }
-        public int SizeX { get; set; }
-        public int SizeY { get; set; }
+        public int Columns { get; set; }
+        public int Rows { get; set; }
     }
 }

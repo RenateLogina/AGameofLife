@@ -12,41 +12,42 @@ namespace GameofLife
     public class GameLogic
     {
         #region variables
-        public int BoardSize;
-        public int LiveCells;
-        public int Iteration;
+        public int BoardSize { get; set; }
+        public int LiveCells { get; set; }
+        public int Iteration { get; set; }
         private int neighbours;
         //bool dimensions
-        public int SizeX;
-        public int SizeY; 
+        public int Columns { get; set; }
+        public int Rows { get; set; }
 
-        public bool[,] Generation;
-        public bool[,] NewGen;
+        public bool[,] Generation { get; set; }
+        public bool[,] NewGeneration { get; set; }
         #endregion
 
         /// <summary>
         /// Sets the very first iteration of the game, randomly
         /// </summary>
-        /// <param name="boardSize"></param>
+        /// <param name="boardSize">sets the bool size according to chosen board size. Columns and Rows are derived from this</param>
         public void SetSeed(int boardSize)
         {
-            //set a 2D array size, based on board size
-            Iteration = 1;
-            SizeX = 50 * boardSize - 3;
-            SizeY = 14 + boardSize * boardSize;
             Random random = new Random();
-            Generation = new bool[SizeY, SizeX];
+            Columns = 50 * boardSize - 3;
+            Rows = 14 + boardSize * boardSize;
+            Generation = new bool[Rows, Columns];
+            Iteration = 1;
 
             //populates the first generation with 2 characters, chosen randomly
             bool[] RandomFiller = new bool[] { true, false };
-            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
+            for (int RowIndex = 0; RowIndex < Rows; RowIndex++)
             {
-                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
+                for (int ColIndex = 0; ColIndex < Columns; ColIndex++)
                 {
                     int boolIndex = random.Next(RandomFiller.Length);
                     Generation[RowIndex, ColIndex] = RandomFiller[boolIndex];
                 }
+
             }
+
             CellCounter();
         }
 
@@ -55,96 +56,116 @@ namespace GameofLife
         /// </summary>
         public string PrintArray()
         {
+            string boarderTop = "\u2584";
+            string boarderLeft = " \u2588";
+            string dot = "\u25CF";
+            string boarderRight = "\u2588";
+            string boarderBottom = "\u2580";
             var sb = new StringBuilder(string.Empty);
-            sb.AppendFormat("  Live cells: {0}      ", LiveCells);
-            sb.AppendFormat("Iteration NR: {0}", Iteration);
+            sb.AppendFormat("  Board size: {0}", BoardSize);
+            sb.AppendLine();
+            sb.AppendFormat("  Live cells: {0}    ", LiveCells);
+            sb.AppendLine();
+            sb.AppendFormat("  Iteration NR: {0}    ", Iteration);
             sb.AppendLine();
             sb.Append(" ");
             for (int width = 1; width < 50 * BoardSize; width++)
             {
-                sb.Append("\u2584");
+                sb.Append(boarderTop);
             }
+
             sb.AppendLine();
-            for (var y = 0; y < SizeY; y++)
+            for (var RowIndex = 0; RowIndex < Rows; RowIndex++)
             {
-                sb.Append(" \u2588");
-                for (var x = 0; x < SizeX; x++)
+                sb.Append(boarderLeft);
+                for (var ColIndex = 0; ColIndex < Columns; ColIndex++)
                 {
-                    if(Generation[y, x])
+                    if(Generation[RowIndex, ColIndex])
                     {
-                        sb.Append("\u25CF");
+                        sb.Append(dot);
                     }
+
                     else
                     {
                         sb.Append(" ");
                     }
+
                 }
-                sb.Append("\u2588");
+
+                sb.Append(boarderRight);
                 sb.AppendLine();
             }
+
             sb.Append(" ");
             for (int width = 1; width < 50 * BoardSize; width++)
             {
-                sb.Append("\u2580");
+                sb.Append(boarderBottom);
             }
+
             var result = sb.ToString();
             return result;
         }
 
         /// <summary>
-        /// Populates NewGen array with cells according to Generation cell positions 
+        /// Populates NewGeneration array with cells according to Generation cell positions 
         /// and resets Generation array
         /// </summary>
-        public void NewGeneration()
+        public void NewGenerationeration()
         {
-            NewGen = new bool[SizeY, SizeX];
+            NewGeneration = new bool[Rows, Columns];
             //Sifts through each cell, checking it's neighbours
-            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
+            for (int RowIndex = 0; RowIndex < Rows; RowIndex++)
             {
-                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
+                for (int ColIndex = 0; ColIndex < Columns; ColIndex++)
                 {
                     //Checks for neighbours of the cell
-                    NeigbourCounter(RowIndex, ColIndex);
-                    Console.SetCursorPosition(1, 28);
-                    
+                    NeigbourCounter(RowIndex, ColIndex); 
                     //checks if cell is alive
                     if (Generation[RowIndex, ColIndex])
                     {
                         //if has less than 2 or more than 3 live neighbours, it dies
                         if (neighbours < 2 || neighbours > 3)
                         {
-                            NewGen[RowIndex, ColIndex] = false;
+                            NewGeneration[RowIndex, ColIndex] = false;
                         }
+
                         //else it lives on
                         else
                         {
-                            NewGen[RowIndex, ColIndex] = true;
+                            NewGeneration[RowIndex, ColIndex] = true;
                         }
+
                     }
+
                     //if the cell is dead
                     else
                     {
                         if (neighbours == 3)
                         {
-                            NewGen[RowIndex, ColIndex] = true;
+                            NewGeneration[RowIndex, ColIndex] = true;
                         }
+
                         //else it remains dead
                         else
                         {
-                            NewGen[RowIndex, ColIndex] = false;
+                            NewGeneration[RowIndex, ColIndex] = false;
                         }
+
                     }
+
                 }
+
             }
-            Generation = NewGen;
+
+            Generation = NewGeneration;
             CellCounter();
         }
 
         /// <summary>
         /// algorythm to check the neighbours of a particular cell
         /// </summary>
-        /// <param name="RowIndex"></param>
-        /// <param name="ColIndex"></param>
+        /// <param name="RowIndex">Particular index of bool[,] element on x axis</param>
+        /// <param name="ColIndex">Particular index of bool[,] element on y axis</param>
         private void NeigbourCounter(int RowIndex, int ColIndex)
         {
             neighbours = 0;
@@ -154,37 +175,44 @@ namespace GameofLife
             {
                 for (int Col = -1; Col < 2; Col++)
                 {
-                    if (RowIndex + Row > -1 && ColIndex + Col > -1 && Row + RowIndex < SizeY && ColIndex + Col < SizeX)
+                    if (RowIndex + Row > -1 && ColIndex + Col > -1 && Row + RowIndex < Rows && ColIndex + Col < Columns)
                     {
                         if (Row == 0 && Col == 0)
                         {
                             //do nothing
                         }
+
                         else if (Generation[RowIndex + Row, ColIndex + Col])
                         {
                             neighbours++;
                         }
+
                     }
+
                 }
+
             }
         }        
 
         /// <summary>
-        /// Counts cells in the Generation array
+        /// Counts live cells in the Generation array
         /// </summary>
-        /// <returns></returns>
+        /// <returns>returns amount (int) of cells currently alive</returns>
         public int CellCounter()
         {
             LiveCells = 0;
-            for (int RowIndex = 0; RowIndex < SizeY; RowIndex++)
+
+            for (int RowIndex = 0; RowIndex < Rows; RowIndex++)
             {
-                for (int ColIndex = 0; ColIndex < SizeX; ColIndex++)
+                for (int ColIndex = 0; ColIndex < Columns; ColIndex++)
                 {
                     if(Generation[RowIndex,ColIndex])
                     {
                         LiveCells++;
                     }
+
                 }
+
             }
 
             return LiveCells;
