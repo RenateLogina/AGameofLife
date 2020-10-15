@@ -110,12 +110,16 @@
                 Columns = gameLogic.Columns,
                 Rows = gameLogic.Rows
             };
-            string filePath = @"C:\Userializers\r.logina\Documents\gameprogress.save";
+            string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
             serializer.Serialize(gameProgress, filePath);
         }
+
+        /// <summary>
+        /// Fills variables with data from file
+        /// </summary>
         private void LoadGame()
         { 
-            string filePath = @"C:\Userializers\r.logina\Documents\gameprogress.save";
+            string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
             gameLogic = serializer.Deserialize(filePath);
         }
     }
