@@ -7,7 +7,6 @@ namespace GameofLife
 {
     class GameUI
     {
-        GameLogic gameLogic = new GameLogic();
         public string UserAction;
 
         /// <summary>
@@ -16,7 +15,7 @@ namespace GameofLife
         public string GameMenu()
         {
             
-            Console.SetWindowSize(155, 30);
+            Console.SetWindowSize(155, 32);
             Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
                               "                                                        the\n" +
                               "                                                   GAME OF LIFE\n" +
@@ -43,66 +42,45 @@ namespace GameofLife
             Console.WriteLine("  Press S to save game");
         }
 
+        /// <summary>
+        /// Prints Generation Array
+        /// </summary>
+        /// <param name="array"></param>
         public void Cycle(string array)
         {
             Console.SetCursorPosition(0, 3);
             Console.Write(array);
         }
-
-        public string Toggle(System.Timers.Timer timer)
+        /// <summary>
+        /// Listens for user input
+        /// </summary>
+        /// <returns></returns>
+        public string Toggle()
         {
-            string result = "pause";
-            ConsoleKey input= Console.ReadKey(true).Key;
-            if (input == ConsoleKey.S)
-                {
-                timer.Enabled = false;
-                GameisSaved();
+            string input = Console.ReadKey(true).Key.ToString().ToLower();
 
-                result = "save";
-
-                return result;
-            }
-            else { 
-                if(input == ConsoleKey.P)
-                {
-                    timer.Enabled = false;
-                    ConsoleKey input2 = Console.ReadKey(true).Key;
-                    if (input2 == ConsoleKey.S)
-                    {
-                        GameisSaved();
-                        result = "save";
-                        return result;
-                    }
-                    else
-                    {
-                        if (input2 == ConsoleKey.P)
-                        {
-                            timer.Enabled = true;
-                        }
-                    }
-                }
-            }
-
-            return result;
+            return input;
         }
 
         /// <summary>
         /// supposed to save the game. Doesn't save properly for some reason. :/
         /// </summary>
-        public void  GameisSaved()
+        public string GameisSaved()
         {
             //call save game method
             Console.Clear();
             Console.WriteLine("The game is saved");
-
-            //ConsoleKey input3 = Console.ReadKey(true).Key;
-
-            //if (input3 == ConsoleKey.R)
-            //{
-            //    Console.Clear();
-            //    //return to start
-            //}
-
+            Console.WriteLine("Press R to return to main menu");
+            string input = Console.ReadKey(true).Key.ToString().ToLower();
+            
+            return input;
+        }
+        /// <summary>
+        /// Clears console
+        /// </summary>
+        public void Clear()
+        {
+            Console.Clear();
         }
     }
 }

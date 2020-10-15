@@ -5,7 +5,7 @@
 
     public class GameManager
     {
-        public static System.Timers.Timer myTimer;
+        public static Timer myTimer;
         GameLogic gameLogic = new GameLogic();
         GameUI gameUI = new GameUI();
         Serializer serializer = new Serializer();
@@ -22,32 +22,15 @@
                     gameLogic.BoardSize = Convert.ToInt32(userAction);
                     gameLogic.SetSeed(gameLogic.BoardSize);
                     gameUI.GameHeader();
-                    SetTimer();  
-                    while(myTimer.Enabled)
-                    {
-                        gameUI.Toggle(myTimer);
-                        if (gameUI.Toggle(myTimer) == "pause")
-                        {
-                            myTimer.Enabled = false;
-                            Console.Read();
-                        }
-                        if (gameUI.Toggle(myTimer) == "save")
-                        {
-                            myTimer.Enabled = false;
-                            SaveGame();
-                            Console.Read();
-                        }
-                    }
-
-                    
-
-                    //GameLoop();
+                    SetTimer();
+                    Toggler();
                     break;
 
                 case "l":
                     LoadGame();
                     gameUI.GameHeader();
-                    //GameLoop();
+                    SetTimer();
+                    Toggler();
                     break;
 
                 default:
@@ -57,7 +40,49 @@
                     return;
             }
         }
-
+        /// <summary>
+        /// Toggles timer and saves according to user input
+        /// </summary>
+        private void Toggler()
+        {
+            while (myTimer.Enabled)
+            {
+                switch (gameUI.Toggle())
+                {
+                    case "s":
+                        myTimer.Enabled = false;
+                        SaveGame();
+                        if(gameUI.GameisSaved() == "r")
+                        {
+                            gameUI.Clear();
+                            StartGame();
+                        }
+                        break;
+                    case "p":
+                        myTimer.Enabled = false;
+                        if(gameUI.Toggle() == "p")
+                        {
+                            myTimer.Enabled = true;
+                        }
+                        if (gameUI.Toggle() == "s")
+                        {
+                            SaveGame();
+                            if (gameUI.GameisSaved() == "r")
+                            {
+                                gameUI.Clear();
+                                StartGame();
+                            }
+                        }
+                        break;
+                    case "r":
+                        myTimer.Enabled = true;
+                        break;
+                }
+            }
+        }
+        /// <summary>
+        /// Sets timer to 1 sec
+        /// </summary>
         private void SetTimer()
         {
             myTimer = new System.Timers.Timer(1000);
@@ -66,6 +91,11 @@
             myTimer.Enabled = true;
         }
 
+        /// <summary>
+        /// loops game logic
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         public void GameLoop(Object source, ElapsedEventArgs e)
         {
             gameUI.Cycle(gameLogic.PrintArray());
