@@ -120,7 +120,14 @@
         private void LoadGame()
         { 
             string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
-            gameLogic = serializer.Deserialize(filePath);
+            GameProgress gameProgress = serializer.Deserialize(filePath);
+
+            gameLogic.Columns = gameProgress.Columns;
+            gameLogic.Rows = gameProgress.Rows;
+            gameLogic.BoardSize = gameProgress.BoardSize;
+            gameLogic.Iteration = gameProgress.Iteration;
+            gameLogic.LiveCells = gameProgress.LiveCells;
+            gameLogic.Generation = gameProgress.GenerationArray;
         }
     }
 }

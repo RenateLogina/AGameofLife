@@ -19,20 +19,11 @@
             File.WriteAllText(filePath, result);
         }
 
-        public GameLogic Deserialize(string filePath)
+        public GameProgress Deserialize(string filePath)
         {
             GameProgress gameProgress = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
-            if (File.Exists(filePath)) // I should move this to manager
-            {
-                gameLogic.Columns = gameProgress.Columns;
-                gameLogic.Rows = gameProgress.Rows;
-                gameLogic.BoardSize = gameProgress.BoardSize;
-                gameLogic.Iteration = gameProgress.Iteration;
-                gameLogic.LiveCells = gameProgress.LiveCells;
-                gameLogic.Generation = gameProgress.GenerationArray;
-            }
 
-            return gameLogic; //this should only return gameProgress
+            return gameProgress; //this should only return gameProgress
         }
     }
 }
