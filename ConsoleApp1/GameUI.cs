@@ -42,6 +42,22 @@ namespace GameofLife
             Console.WriteLine("  Press S to save game");
         }
 
+        public void Cycle()
+        {
+            Console.SetCursorPosition(0, 3);
+            Console.Write(gameLogic.PrintArray());
+            if (Console.KeyAvailable)
+            {
+            }
+        }
+
+        public void Toggle()
+        {
+            if(Console.KeyAvailable)
+            {
+            }
+        }
+
         /// <summary>
         /// supposed to save the game. Doesn't save properly for some reason. :/
         /// </summary>

@@ -1,12 +1,12 @@
 ﻿namespace GameofLife
 {
     using System;
-    using System.Threading;
-    using Newtonsoft.Json;
-    using System.IO;
+    using System.Runtime.InteropServices.ComTypes;
+    using System.Timers;
+
     public class GameManager
     {
-        //BoardSize stores the level of BoardSizeiculty(board BoardSize) entered buy userializer     
+        private static System.Timers.Timer myTimer;
         GameLogic gameLogic = new GameLogic();
         GameUI gameUI = new GameUI();
         Serializer serializer = new Serializer();
@@ -23,14 +23,18 @@
                 case "3":
                     gameLogic.BoardSize = Convert.ToInt32(userializerAction);
                     gameLogic.SetSeed(gameLogic.BoardSize);
+                    SetTimer();
                     gameUI.GameHeader();
-                    GameLoop();
+
+                    Console.Read();
+
+                    //GameLoop();
                     break;
 
                 case "l":
                     LoadGame();
                     gameUI.GameHeader();
-                    GameLoop();
+                    //GameLoop();
                     break;
 
                 default:
@@ -41,17 +45,40 @@
             }
         }
 
+        private  void SetTimer()
+        {
+            myTimer = new System.Timers.Timer(1000);
+            myTimer.Elapsed += GameLoop;
+            myTimer.AutoReset = true;
+            myTimer.Enabled = true;
+            
+        }
+
+        private void GameLoop(Object source, ElapsedEventArgs e)
+        {
+            Console.SetCursorPosition(0, 3);
+            Console.Write(gameLogic.PrintArray());
+            gameLogic.Iteration++;
+            gameLogic.NewGenerationeration();
+        }
+
+        //private void ToggleTimer()
+        //{
+        //    myTimer.Enabled = false;
+        //}
+
+        private void GameLoop2(Object source, ElapsedEventArgs e)
+        {
+            gameUI.Cycle();
+        }
+
         /// <summary>
         /// prints gameboard borders UI information of the particular game and loops the game :O
         /// </summary>
-        private void GameLoop()
+        private void GameLoop3()
         {
-            //loops through iterations
-            while (true)
-            {
                 Console.SetCursorPosition(0, 3);
                 Console.Write(gameLogic.PrintArray());
-                Thread.Sleep(1000);
 
                 //checks if userializer presses any key to pause or save
                 if (Console.KeyAvailable)
@@ -70,8 +97,6 @@
                             Console.Clear();
                             StartGame();
                         }
-
-                        break;
                     }
 
                     else
@@ -89,15 +114,11 @@
                                 Console.Clear();
                                 StartGame();
                             }
-
-                            break;
                         }
                     }
                 }
                 gameLogic.Iteration++;
                 gameLogic.NewGenerationeration();
-            }
-            Console.ReadKey();
         }
         private void SaveGame()
         {
