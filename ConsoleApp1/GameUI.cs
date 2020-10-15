@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace GameofLife
 {
@@ -42,38 +43,65 @@ namespace GameofLife
             Console.WriteLine("  Press S to save game");
         }
 
-        public void Cycle()
+        public void Cycle(string array)
         {
             Console.SetCursorPosition(0, 3);
-            Console.Write(gameLogic.PrintArray());
-            if (Console.KeyAvailable)
-            {
-            }
+            Console.Write(array);
         }
 
-        public void Toggle()
+        public string Toggle(System.Timers.Timer timer)
         {
-            if(Console.KeyAvailable)
-            {
+            string result = "pause";
+            ConsoleKey input= Console.ReadKey(true).Key;
+            if (input == ConsoleKey.S)
+                {
+                timer.Enabled = false;
+                GameisSaved();
+
+                result = "save";
+
+                return result;
             }
+            else { 
+                if(input == ConsoleKey.P)
+                {
+                    timer.Enabled = false;
+                    ConsoleKey input2 = Console.ReadKey(true).Key;
+                    if (input2 == ConsoleKey.S)
+                    {
+                        GameisSaved();
+                        result = "save";
+                        return result;
+                    }
+                    else
+                    {
+                        if (input2 == ConsoleKey.P)
+                        {
+                            timer.Enabled = true;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
         /// supposed to save the game. Doesn't save properly for some reason. :/
         /// </summary>
-        public void GameisSaved()
+        public void  GameisSaved()
         {
-            GameManager gameManager = new GameManager();
+            //call save game method
             Console.Clear();
-            Console.SetCursorPosition(13, 5);
             Console.WriteLine("The game is saved");
-            Console.WriteLine("         Press R to return to menu");
-            //gameManager.SaveGame();
-            if (Console.ReadKey(true).Key == ConsoleKey.R)
-            {
-                Console.Clear();
-                gameManager.StartGame();
-            }
+
+            //ConsoleKey input3 = Console.ReadKey(true).Key;
+
+            //if (input3 == ConsoleKey.R)
+            //{
+            //    Console.Clear();
+            //    //return to start
+            //}
 
         }
     }
