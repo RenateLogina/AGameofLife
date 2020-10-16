@@ -7,14 +7,12 @@ namespace GameofLife
 {
     class GameUI
     {
-        public string UserAction;
-
         /// <summary>
-        /// Prints main game menu
+        /// Prints main game menu.
         /// </summary>
         public string GameMenu()
         {
-            
+            Console.Clear();
             Console.SetWindowSize(155, 32);
             Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
                               "                                                        the\n" +
@@ -27,12 +25,12 @@ namespace GameofLife
                               "\n\n\n                                                  ENTER Q TO QUIT");
 
             Console.SetCursorPosition(59, 22);
-            UserAction = Console.ReadLine().ToLower();
+            string UserAction = Console.ReadLine().ToLower();
             return UserAction;
         }
 
         /// <summary>
-        /// Describes main menu actions available during game
+        /// Describes main menu actions available during game.
         /// </summary>
         public void GameHeader()
         {
@@ -43,19 +41,20 @@ namespace GameofLife
         }
 
         /// <summary>
-        /// Prints Generation Array
+        /// Prints Generation Array.
         /// </summary>
-        /// <param name="array"></param>
-        public void Cycle(string array)
+        /// <param name="generationArray"> This represents the generation array from GameManager. </param>
+        public void Cycle(string generationArray)
         {
             Console.SetCursorPosition(0, 3);
-            Console.Write(array);
+            Console.Write(generationArray);
         }
+
         /// <summary>
-        /// Listens for user input
+        /// Listens for user input during the game.
         /// </summary>
-        /// <returns></returns>
-        public string Toggle()
+        /// <returns> Returns user input value. </returns>
+        public string ToggleInput()
         {
             string input = Console.ReadKey(true).Key.ToString().ToLower();
 
@@ -63,8 +62,9 @@ namespace GameofLife
         }
 
         /// <summary>
-        /// supposed to save the game. Doesn't save properly for some reason. :/
+        /// Informs user that the game is saved. Informs of a way to return to main menu.
         /// </summary>
+        /// <returns> Reads further user input. </returns>
         public string GameisSaved()
         {
             //call save game method
@@ -75,12 +75,6 @@ namespace GameofLife
             
             return input;
         }
-        /// <summary>
-        /// Clears console
-        /// </summary>
-        public void Clear()
-        {
-            Console.Clear();
-        }
+
     }
 }

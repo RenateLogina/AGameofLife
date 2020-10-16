@@ -5,8 +5,11 @@
     using System.IO;
     public class Serializer
     {
-        GameLogic gameLogic = new GameLogic();
-
+        /// <summary>
+        /// Serializes the current game progress to a file.
+        /// </summary>
+        /// <param name="gameProgress"> GameProgress object filled with values via GameManager. </param>
+        /// <param name="filePath"> Path where the file is saved as set in GameManager. </param>
         public void Serialize(GameProgress gameProgress, string filePath)
         {
             string result = JsonConvert.SerializeObject(gameProgress);
@@ -19,6 +22,11 @@
             File.WriteAllText(filePath, result);
         }
 
+        /// <summary>
+        /// Deserializes a file containing an object.
+        /// </summary>
+        /// <param name="filePath"> Location of the file as set in GameManager </param>
+        /// <returns></returns>
         public GameProgress Deserialize(string filePath)
         {
             GameProgress gameProgress = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));

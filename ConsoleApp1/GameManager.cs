@@ -10,6 +10,9 @@
         GameUI gameUI = new GameUI();
         Serializer serializer = new Serializer();
 
+        /// <summary>
+        /// Starts game menu, gathers user input performs actions according to user input.
+        /// </summary>
         public void StartGame()
         {
             string userAction = gameUI.GameMenu();
@@ -39,49 +42,65 @@
                 case "q":
                     return;
             }
+
         }
+
         /// <summary>
-        /// Toggles timer and saves according to user input
+        /// Toggles timer and saves according to user input.
         /// </summary>
         private void Toggler()
         {
             while (myTimer.Enabled)
             {
-                switch (gameUI.Toggle())
+                switch (gameUI.ToggleInput())
                 {
                     case "s":
                         myTimer.Enabled = false;
                         SaveGame();
+
                         if(gameUI.GameisSaved() == "r")
                         {
-                            gameUI.Clear();
                             StartGame();
                         }
                         break;
+
                     case "p":
                         myTimer.Enabled = false;
-                        if(gameUI.Toggle() == "p")
+
+                        if(gameUI.ToggleInput() == "p")
                         {
                             myTimer.Enabled = true;
                         }
-                        if (gameUI.Toggle() == "s")
+
+                        if (gameUI.ToggleInput() == "s")
                         {
                             SaveGame();
+
                             if (gameUI.GameisSaved() == "r")
                             {
-                                gameUI.Clear();
                                 StartGame();
                             }
+
                         }
+
                         break;
+
                     case "r":
                         myTimer.Enabled = true;
                         break;
+
+                    default:
+
+                        continue;
+
                 }
+
             }
+
         }
+
         /// <summary>
-        /// Sets timer to 1 sec
+        /// Sets timer to 1 sec.
         /// </summary>
         private void SetTimer()
         {
@@ -92,10 +111,10 @@
         }
 
         /// <summary>
-        /// loops game logic
+        /// Loops game logic.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
+        /// <param name="source"> I honsestly don't know what this is. </param>
+        /// <param name="e"> Defines each time elapsed? </param>
         public void GameLoop(Object source, ElapsedEventArgs e)
         {
             gameUI.Cycle(gameLogic.PrintArray());
@@ -103,10 +122,9 @@
             gameLogic.NewGenerationeration();
         }
 
-        //private void ToggleTimer()
-        //{
-        //    myTimer.Enabled = false;
-        //}
+        /// <summary>
+        /// Calls serializer and saves the current state of the game.
+        /// </summary>
         public void SaveGame()
         {
             GameProgress gameProgress = new GameProgress
@@ -118,12 +136,13 @@
                 Columns = gameLogic.Columns,
                 Rows = gameLogic.Rows
             };
+
             string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
             serializer.Serialize(gameProgress, filePath);
         }
 
         /// <summary>
-        /// Fills variables with data from file
+        /// Fills variables with data from file.
         /// </summary>
         private void LoadGame()
         { 
@@ -137,5 +156,6 @@
             gameLogic.LiveCells = gameProgress.LiveCells;
             gameLogic.Generation = gameProgress.GenerationArray;
         }
+
     }
 }
