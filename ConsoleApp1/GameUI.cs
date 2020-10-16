@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-namespace GameofLife
+﻿namespace GameofLife
 {
-    class GameUI
+    using System;
+    /// <summary>
+    /// Prints console commands and collects user input.
+    /// </summary>
+    public class GameUI
     {
         /// <summary>
         /// Prints main game menu.
@@ -65,7 +64,7 @@ namespace GameofLife
         /// Informs user that the game is saved. Informs of a way to return to main menu.
         /// </summary>
         /// <returns> Reads further user input. </returns>
-        public string GameisSaved()
+        public string GameIsSaved()
         {
             //call save game method
             Console.Clear();

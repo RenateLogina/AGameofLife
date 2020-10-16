@@ -3,46 +3,37 @@
     using System;
     using System.Timers;
 
+    /// <summary>
+    /// Manages all functionality. Connecting point between GameLogic and GameUI.
+    /// </summary>
     public class GameManager
     {
-        public static Timer myTimer;
-        GameLogic gameLogic = new GameLogic();
-        GameUI gameUI = new GameUI();
-        Serializer serializer = new Serializer();
+        public Timer myTimer;
+        private string userAction;
+        private GameLogic gameLogic = new GameLogic();
+        private GameUI gameUI = new GameUI();
+        private Serializer serializer = new Serializer();
 
         /// <summary>
         /// Starts game menu, gathers user input performs actions according to user input.
         /// </summary>
         public void StartGame()
         {
-            string userAction = gameUI.GameMenu();
-
+            userAction = gameUI.GameMenu();
             switch (userAction)
             {
                 case "1":
                 case "2":
                 case "3":
-                    gameLogic.BoardSize = Convert.ToInt32(userAction);
-                    gameLogic.SetSeed(gameLogic.BoardSize);
-                    gameUI.GameHeader();
-                    SetTimer();
-                    Toggler();
+                    SetFirstIteration();
+                    SetGameBoard();
                     break;
 
                 case "l":
                     LoadGame();
-                    gameUI.GameHeader();
-                    SetTimer();
-                    Toggler();
-                    break;
-
-                default:
-                    break;
-
-                case "q":
-                    return;
+                    SetGameBoard();
+                    break;             
             }
-
         }
 
         /// <summary>
@@ -55,48 +46,53 @@
                 switch (gameUI.ToggleInput())
                 {
                     case "s":
-                        myTimer.Enabled = false;
-                        SaveGame();
-
-                        if(gameUI.GameisSaved() == "r")
-                        {
-                            StartGame();
-                        }
+                        SaveGame(); 
                         break;
 
                     case "p":
-                        myTimer.Enabled = false;
-
-                        if(gameUI.ToggleInput() == "p")
-                        {
-                            myTimer.Enabled = true;
-                        }
-
-                        if (gameUI.ToggleInput() == "s")
-                        {
-                            SaveGame();
-
-                            if (gameUI.GameisSaved() == "r")
-                            {
-                                StartGame();
-                            }
-
-                        }
-
-                        break;
-
-                    case "r":
-                        myTimer.Enabled = true;
+                        PauseGame();
                         break;
 
                     default:
-
                         continue;
-
                 }
-
             }
+        }
 
+        /// <summary>
+        /// Sets the first randomly filled Generation array according to user input. 
+        /// </summary>
+        private void SetFirstIteration()
+        {
+            gameLogic.BoardSize = Convert.ToInt32(userAction);
+            gameLogic.SetSeed(gameLogic.BoardSize);
+        }
+
+        /// <summary>
+        /// Prints user commands, starts the game loop and listens for further player input.
+        /// </summary>
+        private void SetGameBoard()
+        {
+            gameUI.GameHeader();
+            SetTimer();
+            Toggler();
+        }
+
+        /// <summary>
+        /// Disables Timer, listens for user action to resume timer.
+        /// </summary>
+        private void PauseGame()
+        {
+            myTimer.Enabled = false;
+            string input = gameUI.ToggleInput();
+            if (input == "p")
+            {
+                myTimer.Enabled = true;
+            }
+            else if (input == "s")
+            {
+                SaveGame();
+            }
         }
 
         /// <summary>
@@ -119,14 +115,17 @@
         {
             gameUI.Cycle(gameLogic.PrintArray());
             gameLogic.Iteration++;
-            gameLogic.NewGenerationeration();
+            gameLogic.NewGeneration();
         }
 
         /// <summary>
-        /// Calls serializer and saves the current state of the game.
+        /// Stops timer, calls serializer and saves the current state of the game,
+        /// listens for user input to go back to start menu.
         /// </summary>
         public void SaveGame()
         {
+            myTimer.Enabled = false;
+            
             GameProgress gameProgress = new GameProgress
             {
                 GenerationArray = gameLogic.Generation,
@@ -137,8 +136,12 @@
                 Rows = gameLogic.Rows
             };
 
-            string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
-            serializer.Serialize(gameProgress, filePath);
+            serializer.Serialize(gameProgress);
+
+            if (gameUI.GameIsSaved() == "r")
+            {
+                StartGame();
+            }
         }
 
         /// <summary>
@@ -146,8 +149,7 @@
         /// </summary>
         private void LoadGame()
         { 
-            string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
-            GameProgress gameProgress = serializer.Deserialize(filePath);
+            GameProgress gameProgress = serializer.Deserialize();
 
             gameLogic.Columns = gameProgress.Columns;
             gameLogic.Rows = gameProgress.Rows;
