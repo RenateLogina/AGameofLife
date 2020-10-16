@@ -19,6 +19,7 @@
         /// </summary>
         public void StartGame()
         {
+
             userAction = gameUI.GameMenu();
             switch (userAction)
             {
@@ -53,6 +54,11 @@
                         PauseGame();
                         break;
 
+                    case "r":
+                        myTimer.Enabled = false;
+                        StartGame();
+                        break;
+
                     default:
                         continue;
                 }
@@ -64,8 +70,8 @@
         /// </summary>
         private void SetFirstIteration()
         {
-            gameLogic.BoardSize = Convert.ToInt32(userAction);
-            gameLogic.SetSeed(gameLogic.BoardSize);
+            gameLogic.gameProgress.BoardSize = Convert.ToInt32(userAction);
+            gameLogic.SetSeed(gameLogic.gameProgress.BoardSize);
         }
 
         /// <summary>
@@ -93,6 +99,10 @@
             {
                 SaveGame();
             }
+            else if (input == "r")
+            {
+                StartGame();
+            }
         }
 
         /// <summary>
@@ -113,8 +123,8 @@
         /// <param name="e"> Defines each time elapsed? </param>
         public void GameLoop(Object source, ElapsedEventArgs e)
         {
-            gameUI.Cycle(gameLogic.PrintArray());
-            gameLogic.Iteration++;
+            gameUI.Cycle(gameUI.PrintArray(gameLogic.gameProgress));
+            gameLogic.gameProgress.Iteration++;
             gameLogic.NewGeneration();
         }
 
@@ -128,12 +138,12 @@
             
             GameProgress gameProgress = new GameProgress
             {
-                GenerationArray = gameLogic.Generation,
-                LiveCells = gameLogic.LiveCells,
-                BoardSize = gameLogic.BoardSize,
-                Iteration = gameLogic.Iteration,
-                Columns = gameLogic.Columns,
-                Rows = gameLogic.Rows
+                Generation = gameLogic.gameProgress.Generation,
+                LiveCells = gameLogic.gameProgress.LiveCells,
+                BoardSize = gameLogic.gameProgress.BoardSize,
+                Iteration = gameLogic.gameProgress.Iteration,
+                Columns = gameLogic.gameProgress.Columns,
+                Rows = gameLogic.gameProgress.Rows
             };
 
             serializer.Serialize(gameProgress);
@@ -151,12 +161,7 @@
         { 
             GameProgress gameProgress = serializer.Deserialize();
 
-            gameLogic.Columns = gameProgress.Columns;
-            gameLogic.Rows = gameProgress.Rows;
-            gameLogic.BoardSize = gameProgress.BoardSize;
-            gameLogic.Iteration = gameProgress.Iteration;
-            gameLogic.LiveCells = gameProgress.LiveCells;
-            gameLogic.Generation = gameProgress.GenerationArray;
+            gameLogic.gameProgress = gameProgress;
         }
 
     }

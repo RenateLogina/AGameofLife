@@ -12,14 +12,16 @@ namespace GameofLife
     public class GameLogic
     {
         #region variables
-        public int BoardSize { get; set; }
-        public int LiveCells { get; set; }
-        public int Iteration { get; set; }
-        // Bool dimensions.
-        public int Columns { get; set; }
-        public int Rows { get; set; }
 
-        public bool[,] Generation { get; set; }
+        public GameProgress gameProgress = new GameProgress();
+        //public int BoardSize { get; set; }
+        //public int LiveCells { get; set; }
+        //public int Iteration { get; set; }
+        //// Bool dimensions.
+        //public int Columns { get; set; }
+        //public int Rows { get; set; }
+
+        //public bool[,] Generation { get; set; }
         private bool[,] newGeneration { get; set; }
 
         private int neighbours;
@@ -32,87 +34,26 @@ namespace GameofLife
         public void SetSeed(int boardSize)
         {
             Random random = new Random();
-            Columns = 50 * boardSize - 3;
-            Rows = 14 + boardSize * boardSize;
-            Generation = new bool[Rows, Columns];
-            Iteration = 1;
-            LiveCells = 0;
+            gameProgress.Columns = 50 * boardSize - 3;
+            gameProgress.Rows = 14 + boardSize * boardSize;
+            gameProgress.Generation = new bool[gameProgress.Rows, gameProgress.Columns];
+            gameProgress.Iteration = 1;
+            gameProgress.LiveCells = 0;
 
             // Populates the first generation with 2 characters, chosen randomly.
             bool[] randomFiller = new bool[] { true, false };
-            for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
+            for (int rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
             {
-                for (int colIndex = 0; colIndex < Columns; colIndex++)
+                for (int colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
                 {
                     int boolIndex = random.Next(randomFiller.Length);
-                    Generation[rowIndex, colIndex] = randomFiller[boolIndex];
+                    gameProgress.Generation[rowIndex, colIndex] = randomFiller[boolIndex];
                     if (boolIndex == 0)
                     {
-                        LiveCells++;
+                        gameProgress.LiveCells++;
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Prints the Generation array and boarders using StringBuilder.
-        /// </summary>
-        /// <returns> Appended string of current game iteration. </returns>
-        public string PrintArray()
-        {
-            #region character symbols used
-            var boarderTop = "\u2584";
-            var boarderLeft = " \u2588";
-            var dot = "\u25CF";
-            var boarderRight = "\u2588";
-            var boarderBottom = "\u2580";
-            #endregion
-            var sb = new StringBuilder(string.Empty);
-
-            sb.AppendFormat("  Board size: {0}", BoardSize);
-            sb.AppendLine();
-            sb.AppendFormat("  Live cells: {0}    ", LiveCells);
-            sb.AppendLine();
-            sb.AppendFormat("  Iteration NR: {0}    ", Iteration);
-            sb.AppendLine();
-            sb.Append(" ");
-
-            for (int width = 1; width < 50 * BoardSize; width++)
-            {
-                sb.Append(boarderTop);
-            }
-
-            sb.AppendLine();
-
-            for (var rowIndex = 0; rowIndex < Rows; rowIndex++)
-            {
-                sb.Append(boarderLeft);
-                for (var colIndex = 0; colIndex < Columns; colIndex++)
-                {
-                    if(Generation[rowIndex, colIndex])
-                    {
-                        sb.Append(dot);
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                }
-
-                sb.Append(boarderRight);
-                sb.AppendLine();
-            }
-
-            sb.Append(" ");
-
-            for (int width = 1; width < 50 * BoardSize; width++)
-            {
-                sb.Append(boarderBottom);
-            }
-
-            var result = sb.ToString();
-
-            return result;
         }
 
         /// <summary>
@@ -121,21 +62,21 @@ namespace GameofLife
         /// </summary>
         public void NewGeneration()
         {
-            newGeneration = new bool[Rows, Columns];
-            LiveCells = 0;
+            newGeneration = new bool[gameProgress.Rows, gameProgress.Columns];
+            gameProgress.LiveCells = 0;
 
             // Sifts through each cell, checking it's neighbours.
-            for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
+            for (int rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
             {
-                for (int colIndex = 0; colIndex < Columns; colIndex++)
+                for (int colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
                 {
                     // Checks for neighbours of the cell.
                     NeigbourCounter(rowIndex, colIndex); 
                     // Checks if cell is alive.
-                    if(neighbours == 3 || (neighbours == 2 && Generation[rowIndex, colIndex]))
+                    if(neighbours == 3 || (neighbours == 2 && gameProgress.Generation[rowIndex, colIndex]))
                     {
                         newGeneration[rowIndex, colIndex] = true;
-                        LiveCells++;
+                        gameProgress.LiveCells++;
                     }
                     else
                     {
@@ -144,7 +85,7 @@ namespace GameofLife
                 }
             }
 
-            Generation = newGeneration;
+            gameProgress.Generation = newGeneration;
         }
 
         /// <summary>
@@ -162,13 +103,13 @@ namespace GameofLife
                 for (int Col = -1; Col < 2; Col++)
                 {
                     // Checks if the neighbour is within array bounds.
-                    if ((rowIndex + Row > -1) && (colIndex + Col > -1) && (Row + rowIndex < Rows) && (colIndex + Col < Columns))
+                    if ((rowIndex + Row > -1) && (colIndex + Col > -1) && (Row + rowIndex < gameProgress.Rows) && (colIndex + Col < gameProgress.Columns))
                     {
                         if ((Row == 0) && (Col == 0))
                         {
                             // Do nothing.
                         }
-                        else if (Generation[rowIndex + Row, colIndex + Col])
+                        else if (gameProgress.Generation[rowIndex + Row, colIndex + Col])
                         {
                             neighbours++;
                         }

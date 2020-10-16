@@ -9,7 +9,7 @@
     public class GameProgress
     {
         // Stores Generation Array defined by GameLogic.
-        public bool[,] GenerationArray { get; set; }
+        public bool[,] Generation{ get; set; }
 
         // Current amount of Live cells in a generation.
         public int LiveCells { get; set; }
