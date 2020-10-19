@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Timers;
 
     /// <summary>
@@ -9,7 +10,7 @@
     /// </summary>
     public class GameManager
     {
-        GameList gameList = new GameList();
+        
         public Timer myTimer;
         private string userAction;
         private GameLogic gameLogic = new GameLogic();
@@ -21,8 +22,8 @@
         /// </summary>
         public void StartGame()
         {
-
-            userAction = gameUI.GameMenu();
+            gameUI.GameMenu();
+            userAction = gameUI.UserAction();
             switch (userAction)
             {
                 case "1":
@@ -46,7 +47,7 @@
         {
             while (myTimer.Enabled)
             {
-                switch (gameUI.ToggleInput())
+                switch (gameUI.ToggleInput().ToString().ToLower())
                 {
                     case "s":
                         SaveGame(); 
@@ -92,7 +93,7 @@
         private void PauseGame()
         {
             myTimer.Enabled = false;
-            string input = gameUI.ToggleInput();
+            string input = gameUI.ToggleInput().ToString().ToLower();
             if (input == "p")
             {
                 myTimer.Enabled = true;
@@ -125,7 +126,7 @@
         /// <param name="e"> Defines each time elapsed? </param>
         public void GameLoop(Object source, ElapsedEventArgs e)
         {
-            gameUI.Cycle(gameUI.PrintArray(gameLogic.gameProgress));
+            gameUI.Cycle(gameUI.PrintArray(gameLogic.gameList));
             gameLogic.gameProgress.Iteration++;
             gameLogic.NewGeneration();
         }
@@ -139,9 +140,11 @@
             myTimer.Enabled = false;
             //LoadGame();
 
+
+            //Right now, while the session is running, it adds more items to list and saves it like that.
             // Add the current gameprogress to list
 
-            gameList.Progress.Add(new GameProgress()
+            gameLogic.gameList.Progress.Add(new GameProgress()
             {
                 Generation = gameLogic.gameProgress.Generation,
                 LiveCells = gameLogic.gameProgress.LiveCells,
@@ -152,7 +155,7 @@
             });
 
 
-            serializer.Serialize(gameList);
+            serializer.Serialize(gameLogic.gameList);
 
             // Serialize List
 
@@ -184,11 +187,22 @@
             // throw new NotImplementedException();
 
             // Deserialize 
-            gameList = serializer.Deserialize();
+            gameLogic.gameList = serializer.Deserialize();
 
-            gameLogic.gameProgress = gameList.Progress[0];
 
-            // Fill list.
+            //foreach(var game in gameLogic.gameList.Progress)
+            //{
+            //    gameUI.gamesLoaded.Progress.Add(game);
+            //}
+
+            gameUI.ChooseGame();
+
+            // Loads the first game if there is only one game
+            // Loads empty if there are more items in the list
+            //if(gameLogic.gameList.Progress.Count() == 1)
+            //{
+            //    gameLogic.gameProgress = gameLogic.gameList.Progress[0];
+            //}
             
 
             //Progress = serializer.Deserialize().Progress;

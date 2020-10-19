@@ -14,14 +14,7 @@ namespace GameofLife
         #region variables
 
         public GameProgress gameProgress = new GameProgress();
-        //public int BoardSize { get; set; }
-        //public int LiveCells { get; set; }
-        //public int Iteration { get; set; }
-        //// Bool dimensions.
-        //public int Columns { get; set; }
-        //public int Rows { get; set; }
-
-        //public bool[,] Generation { get; set; }
+        public GameList gameList = new GameList();
         private bool[,] newGeneration { get; set; }
 
         private int neighbours;
