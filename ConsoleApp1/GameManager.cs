@@ -1,6 +1,7 @@
 ﻿namespace GameofLife
 {
     using System;
+    using System.Collections.Generic;
     using System.Timers;
 
     /// <summary>
@@ -8,6 +9,7 @@
     /// </summary>
     public class GameManager
     {
+        GameList gameList = new GameList();
         public Timer myTimer;
         private string userAction;
         private GameLogic gameLogic = new GameLogic();
@@ -135,18 +137,38 @@
         public void SaveGame()
         {
             myTimer.Enabled = false;
-            
-            GameProgress gameProgress = new GameProgress
+            //LoadGame();
+
+            // Add the current gameprogress to list
+
+            gameList.Progress.Add(new GameProgress()
             {
                 Generation = gameLogic.gameProgress.Generation,
                 LiveCells = gameLogic.gameProgress.LiveCells,
                 BoardSize = gameLogic.gameProgress.BoardSize,
                 Iteration = gameLogic.gameProgress.Iteration,
                 Columns = gameLogic.gameProgress.Columns,
-                Rows = gameLogic.gameProgress.Rows
-            };
+                Rows = gameLogic.gameProgress.Rows,
+            });
 
-            serializer.Serialize(gameProgress);
+
+            serializer.Serialize(gameList);
+
+            // Serialize List
+
+
+            //GameProgress gameProgress = new GameProgress
+            //{
+            //    Generation = gameLogic.gameProgress.Generation,
+            //    LiveCells = gameLogic.gameProgress.LiveCells,
+            //    BoardSize = gameLogic.gameProgress.BoardSize,
+            //    Iteration = gameLogic.gameProgress.Iteration,
+            //    Columns = gameLogic.gameProgress.Columns,
+            //    Rows = gameLogic.gameProgress.Rows
+            //};
+
+
+            //serializer.Serialize(gameProgress);
 
             if (gameUI.GameIsSaved() == "r")
             {
@@ -158,10 +180,23 @@
         /// Fills variables with data from file.
         /// </summary>
         private void LoadGame()
-        { 
-            GameProgress gameProgress = serializer.Deserialize();
+        {
+            // throw new NotImplementedException();
 
-            gameLogic.gameProgress = gameProgress;
+            // Deserialize 
+            gameList = serializer.Deserialize();
+
+            gameLogic.gameProgress = gameList.Progress[0];
+
+            // Fill list.
+            
+
+            //Progress = serializer.Deserialize().Progress;
+            //Progress = serializer.Deserialize();
+
+            // OLD
+            // gameProgress = serializer.Deserialize();
+            // gameLogic.gameProgress = gameProgress;
         }
 
     }

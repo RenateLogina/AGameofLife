@@ -1,7 +1,10 @@
 ﻿namespace GameofLife
 {
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     /// <summary>
     /// Saves and reads game file that contains GameProgress object and is initiated from GameManager
@@ -9,15 +12,12 @@
     public class Serializer
     {
         public string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
-
         /// <summary>
         /// Serializes the current game progress to a file.
         /// </summary>
-        /// <param name="gameProgress"> GameProgress object filled with values via GameManager. </param>
-        /// <param name="filePath"> Path where the file is saved as set in GameManager. </param>
-        public void Serialize(GameProgress gameProgress)
+        public void Serialize(GameList gameList)
         {
-            string result = JsonConvert.SerializeObject(gameProgress);
+            string result = JsonConvert.SerializeObject(gameList);
             File.WriteAllText(filePath, result);
         }
 
@@ -26,15 +26,22 @@
         /// </summary>
         /// <param name="filePath"> Location of the file as set in GameManager </param>
         /// <returns> Returns GameProgress values </returns>
-        public GameProgress Deserialize()
+        public GameList Deserialize()
         {
-            GameProgress gameProgress = null;
+            GameList gameList = null;
+
             if (File.Exists(filePath))
             {
-                gameProgress = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
+                gameList = JsonConvert.DeserializeObject<GameList>(File.ReadAllText(filePath));
             }
 
-            return gameProgress; //this should only return gameProgress
+            //GameProgress gameProgress = null;
+            //if (File.Exists(filePath))
+            //{
+            //    gameProgress = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
+            //}
+
+            return gameList; //this should only return gameProgress
         }
     }
 }
