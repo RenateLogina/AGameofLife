@@ -47,6 +47,16 @@ namespace GameofLife
                     }
                 }
             }
+            gameList.Progress.Add(new GameProgress()
+            {
+                Generation = gameProgress.Generation,
+                LiveCells = gameProgress.LiveCells,
+                BoardSize = gameProgress.BoardSize,
+                Iteration = gameProgress.Iteration,
+                Columns = gameProgress.Columns,
+                Rows = gameProgress.Rows,
+                ID =0,
+            });
         }
 
         /// <summary>

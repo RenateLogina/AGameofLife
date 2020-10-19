@@ -9,6 +9,10 @@
     [Serializable]
     public class GameProgress
     {
+        // Stores Game's ID defined by GameLogic.
+        [JsonProperty("ID")]
+        public int ID { get; set; }
+
         // Stores Generation Array defined by GameLogic.
         [JsonProperty("Generation")]
         public bool[,] Generation { get; set; }

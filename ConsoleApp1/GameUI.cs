@@ -1,6 +1,8 @@
 ﻿namespace GameofLife
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
 
     /// <summary>
@@ -8,8 +10,8 @@
     /// </summary>
     public class GameUI
     {
-        GameLogic gameLogic = new GameLogic();
-        public GameList gamesLoaded = new GameList();
+        public List<int> gamesLoaded = new List<int>();
+        // public GameList gamesLoaded = new GameList();
         /// <summary>
         /// Prints main game menu.
         /// </summary>
@@ -81,7 +83,7 @@
         /// Prints the Generation array and boarders using StringBuilder.
         /// </summary>
         /// <returns> Appended string of current game iteration. </returns>
-        public string PrintArray(GameList gameList)
+        public string PrintList(GameList gameList)
         {
             #region character symbols used
             var boarderTop = "\u2584";
@@ -92,115 +94,125 @@
             #endregion
 
             var sb = new StringBuilder(string.Empty);
-            foreach (var gameLoaded in gamesLoaded.Progress)
+            
+            for( int index = 0; index < gamesLoaded.Count; index++)
             {
-                #region stringBuilder
-                
-                sb.AppendLine();
-                sb.AppendFormat("  Board size: {0}", gameLoaded.BoardSize);
-                sb.AppendLine();
-                sb.AppendFormat("  Live cells: {0}    ", gameLoaded.LiveCells);
-                sb.AppendLine();
-                sb.AppendFormat("  Iteration NR: {0}    ", gameLoaded.Iteration);
-                sb.AppendLine();
-                sb.Append(" ");
-
-                for (int width = 1; width < 50 * gameLoaded.BoardSize; width++)
+                for( int progress = 0; progress < gameList.Progress.Count; progress ++)
                 {
-                    sb.Append(boarderTop);
-                }
-
-                sb.AppendLine();
-
-                for (var rowIndex = 0; rowIndex < gameLoaded.Rows; rowIndex++)
-                {
-                    sb.Append(boarderLeft);
-                    for (var colIndex = 0; colIndex < gameLoaded.Columns; colIndex++)
+                    if (gamesLoaded[index] == progress + 1)
                     {
-                        if (gameLoaded.Generation[rowIndex, colIndex])
+                        #region stringBuilder
+
+                        sb.AppendLine();
+                        sb.AppendFormat("  Board size: {0}", gameList.Progress[progress].BoardSize);
+                        sb.AppendLine();
+                        sb.AppendFormat("  Live cells: {0}    ", gameList.Progress[progress].LiveCells);
+                        sb.AppendLine();
+                        sb.AppendFormat("  Iteration NR: {0}    ", gameList.Progress[progress].Iteration);
+                        sb.AppendLine();
+                        sb.Append(" ");
+
+                        for (int width = 1; width < 50 * gameList.Progress[progress].BoardSize; width++)
                         {
-                            sb.Append(dot);
+                            sb.Append(boarderTop);
                         }
-                        else
+
+                        sb.AppendLine();
+
+                        for (var rowIndex = 0; rowIndex < gameList.Progress[progress].Rows; rowIndex++)
                         {
-                            sb.Append(" ");
+                            sb.Append(boarderLeft);
+                            for (var colIndex = 0; colIndex < gameList.Progress[progress].Columns; colIndex++)
+                            {
+                                if (gameList.Progress[progress].Generation[rowIndex, colIndex])
+                                {
+                                    sb.Append(dot);
+                                }
+                                else
+                                {
+                                    sb.Append(" ");
+                                }
+                            }
+
+                            sb.Append(boarderRight);
+                            sb.AppendLine();
                         }
+
+                        sb.Append(" ");
+
+                        for (int width = 1; width < 50 * gameList.Progress[progress].BoardSize; width++)
+                        {
+                            sb.Append(boarderBottom);
+                        }
+
+
+                        #endregion
                     }
-
-                    sb.Append(boarderRight);
-                    sb.AppendLine();
                 }
-
-                sb.Append(" ");
-
-                for (int width = 1; width < 50 * gameLoaded.BoardSize; width++)
-                {
-                    sb.Append(boarderBottom);
-                }
-
-                
-                #endregion
             }
+
+
+           
             var result = sb.ToString();
 
             return result;
         }
-        //public string PrintArray(GameProgress gameProgress)
-        //{
-        //    #region character symbols used
-        //    var boarderTop = "\u2584";
-        //    var boarderLeft = " \u2588";
-        //    var dot = "\u25CF";
-        //    var boarderRight = "\u2588";
-        //    var boarderBottom = "\u2580";
-        //    #endregion
-        //    var sb = new StringBuilder(string.Empty);
-        //    sb.AppendLine();
-        //    sb.AppendFormat("  Board size: {0}", gameProgress.BoardSize);
-        //    sb.AppendLine();
-        //    sb.AppendFormat("  Live cells: {0}    ", gameProgress.LiveCells);
-        //    sb.AppendLine();
-        //    sb.AppendFormat("  Iteration NR: {0}    ", gameProgress.Iteration);
-        //    sb.AppendLine();
-        //    sb.Append(" ");
+        public string PrintArray(GameProgress gameProgress)
+        {
+            #region character symbols used
+            var boarderTop = "\u2584";
+            var boarderLeft = " \u2588";
+            var dot = "\u25CF";
+            var boarderRight = "\u2588";
+            var boarderBottom = "\u2580";
+            #endregion
+            var sb = new StringBuilder(string.Empty);
+            sb.AppendLine();
+            sb.AppendFormat("  Board size: {0}", gameProgress.BoardSize);
+            sb.AppendLine();
+            sb.AppendFormat("  Live cells: {0}    ", gameProgress.LiveCells);
+            sb.AppendLine();
+            sb.AppendFormat("  Iteration NR: {0}    ", gameProgress.Iteration);
+            sb.AppendLine();
+            sb.Append(" ");
 
-        //    for (int width = 1; width < 50 * gameProgress.BoardSize; width++)
-        //    {
-        //        sb.Append(boarderTop);
-        //    }
+            for (int width = 1; width < 50 * gameProgress.BoardSize; width++)
+            {
+                sb.Append(boarderTop);
+            }
 
-        //    sb.AppendLine();
+            sb.AppendLine();
 
-        //    for (var rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
-        //    {
-        //        sb.Append(boarderLeft);
-        //        for (var colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
-        //        {
-        //            if (gameProgress.Generation[rowIndex, colIndex])
-        //            {
-        //                sb.Append(dot);
-        //            }
-        //            else
-        //            {
-        //                sb.Append(" ");
-        //            }
-        //        }
+            for (var rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
+            {
+                sb.Append(boarderLeft);
+                for (var colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
+                {
+                    if (gameProgress.Generation[rowIndex, colIndex])
+                    {
+                        sb.Append(dot);
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                }
 
-        //        sb.Append(boarderRight);
-        //        sb.AppendLine();
-        //    }
+                sb.Append(boarderRight);
+                sb.AppendLine();
+            }
 
-        //    sb.Append(" ");
+            sb.Append(" ");
 
-        //    for (int width = 1; width < 50 * gameProgress.BoardSize; width++)
-        //    {
-        //        sb.Append(boarderBottom);
-        //    }
+            for (int width = 1; width < 50 * gameProgress.BoardSize; width++)
+            {
+                sb.Append(boarderBottom);
+            }
 
-        //    var result = sb.ToString();
+            var result = sb.ToString();
 
-        //    return result;
-        //}
+            return result;
+        }
 
         public string UserAction()
         {
@@ -208,16 +220,15 @@
             return UserAction;
         }
 
-        public void ChooseGame()
+        public void ChooseGame(GameList gameList)
         {
             Console.Clear();
             //var gameProgressChosen = 
             Console.SetCursorPosition(13, 5);
             Console.WriteLine("  Currently there are {0} games saved\n" +
-                "     Please, enter the ID numer of game You want to load!", gameLogic.gameList.Progress.Count
+                "     Please, enter the ID numer of game You want to load!", gameList.Progress.Count
                 );
             Console.SetCursorPosition(28, 8);
-            UserAction();
         }
     }
 }

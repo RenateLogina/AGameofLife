@@ -126,7 +126,14 @@
         /// <param name="e"> Defines each time elapsed? </param>
         public void GameLoop(Object source, ElapsedEventArgs e)
         {
-            gameUI.Cycle(gameUI.PrintArray(gameLogic.gameList));
+            gameUI.Cycle(gameUI.PrintArray(gameLogic.gameProgress));
+            gameLogic.gameProgress.Iteration++;
+            gameLogic.NewGeneration();
+        }
+
+        public void ListLoop(Object source, ElapsedEventArgs e)
+        {
+            gameUI.Cycle(gameUI.PrintList(gameLogic.gameList));
             gameLogic.gameProgress.Iteration++;
             gameLogic.NewGeneration();
         }
@@ -140,9 +147,8 @@
             myTimer.Enabled = false;
             //LoadGame();
 
-
-            //Right now, while the session is running, it adds more items to list and saves it like that.
-            // Add the current gameprogress to list
+            var game2 = gameLogic.gameList.Progress.FirstOrDefault(x => x.ID == 0);
+            gameLogic.gameList.Progress.Remove(game2);
 
             gameLogic.gameList.Progress.Add(new GameProgress()
             {
@@ -152,26 +158,11 @@
                 Iteration = gameLogic.gameProgress.Iteration,
                 Columns = gameLogic.gameProgress.Columns,
                 Rows = gameLogic.gameProgress.Rows,
+                ID = gameLogic.gameList.Progress.Count + 1,
             });
 
 
             serializer.Serialize(gameLogic.gameList);
-
-            // Serialize List
-
-
-            //GameProgress gameProgress = new GameProgress
-            //{
-            //    Generation = gameLogic.gameProgress.Generation,
-            //    LiveCells = gameLogic.gameProgress.LiveCells,
-            //    BoardSize = gameLogic.gameProgress.BoardSize,
-            //    Iteration = gameLogic.gameProgress.Iteration,
-            //    Columns = gameLogic.gameProgress.Columns,
-            //    Rows = gameLogic.gameProgress.Rows
-            //};
-
-
-            //serializer.Serialize(gameProgress);
 
             if (gameUI.GameIsSaved() == "r")
             {
@@ -184,33 +175,16 @@
         /// </summary>
         private void LoadGame()
         {
-            // throw new NotImplementedException();
-
-            // Deserialize 
             gameLogic.gameList = serializer.Deserialize();
 
+            gameUI.ChooseGame(gameLogic.gameList);
 
-            //foreach(var game in gameLogic.gameList.Progress)
-            //{
-            //    gameUI.gamesLoaded.Progress.Add(game);
-            //}
+            int userAction = int.Parse(gameUI.UserAction());
+            if ((userAction >= 1) && (userAction <= gameLogic.gameList.Progress.Count))
+            {
+                gameUI.gamesLoaded.Add(userAction);
+            }
 
-            gameUI.ChooseGame();
-
-            // Loads the first game if there is only one game
-            // Loads empty if there are more items in the list
-            //if(gameLogic.gameList.Progress.Count() == 1)
-            //{
-            //    gameLogic.gameProgress = gameLogic.gameList.Progress[0];
-            //}
-            
-
-            //Progress = serializer.Deserialize().Progress;
-            //Progress = serializer.Deserialize();
-
-            // OLD
-            // gameProgress = serializer.Deserialize();
-            // gameLogic.gameProgress = gameProgress;
         }
 
     }
