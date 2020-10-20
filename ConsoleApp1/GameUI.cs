@@ -223,12 +223,18 @@
         public void ChooseGame(GameList gameList)
         {
             Console.Clear();
-            //var gameProgressChosen = 
-            Console.SetCursorPosition(13, 5);
-            Console.WriteLine("  Currently there are {0} games saved\n" +
+            Console.SetCursorPosition(0, 5);
+            Console.Write("               Enter L to load games You've chosen: ");
+            foreach (int gameId in gamesLoaded)
+            {
+                Console.Write("{0}, ", gameId);
+            }
+            Console.WriteLine("\n                 Enter R to return to main menu \n" +
+                "                 Currently there are {0} games saved\n" +
+                "                 You can load and view up to 8 games\n" +
                 "     Please, enter the ID numer of game You want to load!", gameList.Progress.Count
                 );
-            Console.SetCursorPosition(28, 8);
+            Console.SetCursorPosition(28, 11);
         }
     }
 }

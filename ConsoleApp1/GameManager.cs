@@ -35,7 +35,7 @@
 
                 case "l":
                     LoadGame();
-                    SetGameBoard();
+                    SetListBoard();
                     break;             
             }
         }
@@ -87,6 +87,13 @@
             Toggler();
         }
 
+        private void SetListBoard()
+        {
+            gameUI.GameHeader();
+            SetTimer2();
+            Toggler();
+        }
+
         /// <summary>
         /// Disables Timer, listens for user action to resume timer.
         /// </summary>
@@ -118,6 +125,13 @@
             myTimer.AutoReset = true;
             myTimer.Enabled = true;
         }
+        private void SetTimer2()
+        {
+            myTimer = new System.Timers.Timer(1000);
+            myTimer.Elapsed += ListLoop;
+            myTimer.AutoReset = true;
+            myTimer.Enabled = true;
+        }
 
         /// <summary>
         /// Loops game logic.
@@ -127,15 +141,20 @@
         public void GameLoop(Object source, ElapsedEventArgs e)
         {
             gameUI.Cycle(gameUI.PrintArray(gameLogic.gameProgress));
-            gameLogic.gameProgress.Iteration++;
+            //gameLogic.gameProgress.Iteration++;
             gameLogic.NewGeneration();
         }
 
         public void ListLoop(Object source, ElapsedEventArgs e)
         {
+            // Prints selected items from list.
             gameUI.Cycle(gameUI.PrintList(gameLogic.gameList));
-            gameLogic.gameProgress.Iteration++;
-            gameLogic.NewGeneration();
+            // Updates All games in the list.
+            foreach(GameProgress game in gameLogic.gameList.Progress)
+            {
+                gameLogic.gameProgress.Iteration++;
+                gameLogic.NewGeneration();
+            }
         }
 
         /// <summary>
@@ -145,10 +164,10 @@
         public void SaveGame()
         {
             myTimer.Enabled = false;
-            //LoadGame();
 
-            var game2 = gameLogic.gameList.Progress.FirstOrDefault(x => x.ID == 0);
-            gameLogic.gameList.Progress.Remove(game2);
+            //// Removes the new game
+            //var game = gameLogic.gameList.Progress.FirstOrDefault(x => x.ID == 0);
+            //gameLogic.gameList.Progress.Remove(game);
 
             gameLogic.gameList.Progress.Add(new GameProgress()
             {
@@ -176,16 +195,30 @@
         private void LoadGame()
         {
             gameLogic.gameList = serializer.Deserialize();
-
-            gameUI.ChooseGame(gameLogic.gameList);
-
-            int userAction = int.Parse(gameUI.UserAction());
-            if ((userAction >= 1) && (userAction <= gameLogic.gameList.Progress.Count))
+            // Clears list in case You return to main menu and choose other games
+            gameUI.gamesLoaded.Clear();
+            while(true)
             {
-                gameUI.gamesLoaded.Add(userAction);
+                gameUI.ChooseGame(gameLogic.gameList);
+                string action = gameUI.UserAction();
+                bool isActionNUmeric = int.TryParse(action, out int gameId);
+
+
+                if (gameUI.gamesLoaded.Count > 8 || ((action == "l") && (gameUI.gamesLoaded.Count > 0)))
+                {
+                    break;
+                }
+                else if ((gameId >= 1) && (gameId <= gameLogic.gameList.Progress.Count))
+                {
+                    gameUI.gamesLoaded.Add(gameId);
+                }
+                
+                else if (action == "r")
+                {
+                    StartGame();
+                    break;
+                }
             }
-
         }
-
     }
 }
