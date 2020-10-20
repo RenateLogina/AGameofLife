@@ -35,13 +35,9 @@
         /// <summary>
         /// Describes main menu actions available during game.
         /// </summary>
-        public void GameHeader()
+        public void Clear()
         {
             Console.Clear();
-            Console.CursorVisible = false;
-            Console.WriteLine("  Press P to pause and resume game");
-            Console.WriteLine("  Press S to save game");
-            Console.WriteLine("  Press R to return to main menu");
         }
 
         /// <summary>
@@ -50,8 +46,13 @@
         /// <param name="generationArray"> This represents the generation array from GameManager. </param>
         public void Cycle(string generationArray)
         {
-            Console.SetCursorPosition(0, 3);
+            Console.SetCursorPosition(0, 0);
+            Console.CursorVisible = false;
+            Console.WriteLine("  Press P to pause and resume game");
+            Console.WriteLine("  Press S to save game");
+            Console.WriteLine("  Press R to return to main menu");
             Console.Write(generationArray);
+            Console.WriteLine();
         }
 
         /// <summary>
@@ -144,15 +145,11 @@
                         {
                             sb.Append(boarderBottom);
                         }
-
-
                         #endregion
                     }
                 }
             }
 
-
-           
             var result = sb.ToString();
 
             return result;

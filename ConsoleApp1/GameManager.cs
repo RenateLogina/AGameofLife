@@ -82,14 +82,14 @@
         /// </summary>
         private void SetGameBoard()
         {
-            gameUI.GameHeader();
+            gameUI.Clear();
             SetTimer();
             Toggler();
         }
 
         private void SetListBoard()
         {
-            gameUI.GameHeader();
+            gameUI.Clear();
             SetTimer2();
             Toggler();
         }
@@ -152,8 +152,7 @@
             // Updates All games in the list.
             foreach(GameProgress game in gameLogic.gameList.Progress)
             {
-                gameLogic.gameProgress.Iteration++;
-                gameLogic.NewGeneration();
+                gameLogic.NewGenerationList(game);
             }
         }
 
@@ -190,7 +189,7 @@
         }
 
         /// <summary>
-        /// Fills variables with data from file.
+        /// Fills variables with data from file. User may choose which games to load from list
         /// </summary>
         private void LoadGame()
         {
