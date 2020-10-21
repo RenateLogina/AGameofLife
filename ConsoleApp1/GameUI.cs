@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
 
     /// <summary>
@@ -11,9 +10,9 @@
     public class GameUI
     {
         public List<int> gamesLoaded = new List<int>();
-        // public GameList gamesLoaded = new GameList();
+
         /// <summary>
-        /// Prints main game menu.
+        /// Prints main game menu. 
         /// </summary>
         public void GameMenu()
         {
@@ -33,7 +32,7 @@
         }
 
         /// <summary>
-        /// Describes main menu actions available during game.
+        /// Simple console clear in case necessary.
         /// </summary>
         public void Clear()
         {
@@ -81,7 +80,7 @@
         }
 
         /// <summary>
-        /// Prints the Generation array and boarders using StringBuilder.
+        /// Prints the Generation array of whole list and boarders using StringBuilder.
         /// </summary>
         /// <returns> Appended string of current game iteration. </returns>
         public string PrintList(GameList gameList)
@@ -156,7 +155,12 @@
 
             return result;
         }
-        public string PrintList2(GameList gameList)
+
+        /// <summary>
+        /// Prints the Generation array of a new game and boarders using StringBuilder.
+        /// </summary>
+        /// <returns> Appended string of current game iteration. </returns>
+        public string PrintGame(GameList gameList)
         {
             #region character symbols used
             var boarderTop = "\u2584";
@@ -217,78 +221,25 @@
             }
             #endregion
 
-
-
-
-            var result = sb.ToString();
-
-            return result;
-        }
-        public string PrintArray(GameProgress gameProgress)
-        {
-            #region character symbols used
-            var boarderTop = "\u2584";
-            var boarderLeft = " \u2588";
-            var dot = "\u25CF";
-            var boarderRight = "\u2588";
-            var boarderBottom = "\u2580";
-            #endregion
-            var sb = new StringBuilder(string.Empty);
-            sb.AppendLine();
-            sb.AppendFormat("  Game ID: {0}    ", gameProgress.ID);
-            sb.AppendLine();
-            sb.AppendFormat("  Board size: {0}", gameProgress.BoardSize);
-            sb.AppendLine();
-            sb.AppendFormat("  Live cells: {0}    ", gameProgress.LiveCells);
-            sb.AppendLine();
-            sb.AppendFormat("  Iteration NR: {0}    ", gameProgress.Iteration);
-            sb.AppendLine();
-            sb.Append(" ");
-
-            for (int width = 1; width < 50 * gameProgress.BoardSize; width++)
-            {
-                sb.Append(boarderTop);
-            }
-
-            sb.AppendLine();
-
-            for (var rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
-            {
-                sb.Append(boarderLeft);
-                for (var colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
-                {
-                    if (gameProgress.Generation[rowIndex, colIndex])
-                    {
-                        sb.Append(dot);
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                }
-
-                sb.Append(boarderRight);
-                sb.AppendLine();
-            }
-
-            sb.Append(" ");
-
-            for (int width = 1; width < 50 * gameProgress.BoardSize; width++)
-            {
-                sb.Append(boarderBottom);
-            }
-
             var result = sb.ToString();
 
             return result;
         }
 
+        /// <summary>
+        /// Reads user input
+        /// </summary>
+        /// <returns> User input </returns>
         public string UserAction()
         {
             string UserAction = Console.ReadLine().ToLower();
             return UserAction;
         }
 
+        /// <summary>
+        /// Shows menu where user can choose up to 8 games to load from file.
+        /// </summary>
+        /// <param name="gameList"> List with game ID's </param>
         public void ChooseGame(GameList gameList)
         {
             Console.Clear();
@@ -307,6 +258,10 @@
             }
             Console.SetCursorPosition(32, 14);
         }
+        
+        /// <summary>
+        /// Message to user in case no file to load exists.
+        /// </summary>
         public void NoGameExists()
         {
             Console.Clear();

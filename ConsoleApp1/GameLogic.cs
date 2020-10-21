@@ -1,8 +1,6 @@
-﻿
-namespace GameofLife
+﻿namespace GameofLife
 {
     using System;
-    using System.Text;
 
     /// <summary>
     /// Game mechanics - setting the first seeds, generating new iteration, 
@@ -22,6 +20,7 @@ namespace GameofLife
 
         /// <summary>
         /// Sets the very first iteration of the game, randomly.
+        /// Adds a new game to list.
         /// </summary>
         /// <param name="boardSize"> Sets the bool size according to chosen board size. Columns and Rows are derived from this. </param>
         public void SetSeed(int boardSize)
@@ -66,38 +65,10 @@ namespace GameofLife
         }
 
         /// <summary>
-        /// Populates NewGeneration array with cells according to Generation cell positions 
-        /// and resets Generation array.
+        /// Resets a GameList Progress generation according to neighbours
         /// </summary>
-        public void NewGeneration()
-        {
-            newGeneration = new bool[gameProgress.Rows, gameProgress.Columns];
-            gameProgress.LiveCells = 0;
-
-            // Sifts through each cell, checking it's neighbours.
-            for (int rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
-            {
-                for (int colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
-                {
-                    // Checks for neighbours of the cell.
-                    NeigbourCounter(rowIndex, colIndex); 
-                    // Checks if cell is alive.
-                    if(neighbours == 3 || (neighbours == 2 && gameProgress.Generation[rowIndex, colIndex]))
-                    {
-                        newGeneration[rowIndex, colIndex] = true;
-                        gameProgress.LiveCells++;
-                    }
-                    else
-                    {
-                        newGeneration[rowIndex, colIndex] = false;
-                    }
-                }
-            }
-            gameProgress.Iteration++;
-            gameProgress.Generation = newGeneration;
-        }
-
-        public void NewGenerationList(GameProgress game)
+        /// <param name="game"> Particular game in the list </param>
+        public void NewGeneration(GameProgress game)
         {
             newGeneration = new bool[game.Rows, game.Columns];
             game.LiveCells = 0;
@@ -128,32 +99,7 @@ namespace GameofLife
         /// <summary>
         /// Algorythm to check the neighbours of a particular cell.
         /// </summary>
-        /// <param name="rowIndex">Particular index of bool[,] element on x axis</param>
-        /// <param name="colIndex">Particular index of bool[,] element on y axis</param>
-        private void NeigbourCounter(int rowIndex, int colIndex)
-        {
-            neighbours = 0;
-
-            // Loops through a 3x3 square with an array cell set in center.
-            for (int Row = -1; Row < 2; Row++)
-            {
-                for (int Col = -1; Col < 2; Col++)
-                {
-                    // Checks if the neighbour is within array bounds.
-                    if ((rowIndex + Row > -1) && (colIndex + Col > -1) && (Row + rowIndex < gameProgress.Rows) && (colIndex + Col < gameProgress.Columns))
-                    {
-                        if ((Row == 0) && (Col == 0))
-                        {
-                            // Do nothing.
-                        }
-                        else if (gameProgress.Generation[rowIndex + Row, colIndex + Col])
-                        {
-                            neighbours++;
-                        }
-                    }
-                }
-            }
-        }
+        /// <param name="game"> Which particular game in the List GameList Progress to check. </param>
         private void ListNeigbourCounter(int rowIndex, int colIndex, GameProgress game)
         {
             neighbours = 0;

@@ -1,9 +1,7 @@
 ﻿namespace GameofLife
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Timers;
 
     /// <summary>
@@ -11,7 +9,6 @@
     /// </summary>
     public class GameManager
     {
-        
         public Timer myTimer;
         private string userAction;
         private GameLogic gameLogic = new GameLogic();
@@ -36,10 +33,12 @@
 
                 case "l":
                     ReadGame();
-                    CheckFile();
                     LoadParticularGame();
                     SetListBoard();
-                    break;             
+                    break;
+
+                case "q":
+                    return;
             }
         }
 
@@ -82,25 +81,71 @@
         }
 
         /// <summary>
-        /// Prints user commands, starts the game loop and listens for further player input.
+        /// Prints user commands, starts the game loop of the New, single game and listens for further player input.
         /// </summary>
         private void SetGameBoard()
         {
             gameUI.Clear();
-            SetTimer3();
+            SetGameTimer();
             Toggler();
         }
-        private void SetGameBoard2() //old
+
+        /// <summary>
+        /// Prints user commands, starts the game loop and listens for further player input.
+        /// </summary>
+        private void SetListBoard()
         {
             gameUI.Clear();
-            SetTimer();
+            SetListTimer();
             Toggler();
         }
-        private void SetListBoard() //for many items
+
+        /// <summary>
+        /// Sets timer to 1 sec. Loops new game
+        /// </summary>
+        private void SetGameTimer()
         {
-            gameUI.Clear();
-            SetTimer2();
-            Toggler();
+            myTimer = new System.Timers.Timer(1000);
+            myTimer.Elapsed += NewGameLoop;
+            myTimer.AutoReset = true;
+            myTimer.Enabled = true;
+        }
+
+        /// <summary>
+        /// Sets timer to 1 sec. Loops List
+        /// </summary>
+        private void SetListTimer()
+        {
+            myTimer = new System.Timers.Timer(1000);
+            myTimer.Elapsed += ListLoop;
+            myTimer.AutoReset = true;
+            myTimer.Enabled = true;
+        }
+
+        /// <summary>
+        /// Loops a single new game.
+        /// </summary>
+        public void NewGameLoop(Object source, ElapsedEventArgs e)
+        {
+            // Prints selected items from list.
+            gameUI.Cycle(gameUI.PrintGame(gameLogic.gameList));
+            // Updates last game in the list.
+            var gameIndex = gameLogic.gameList.Progress.Count() - 1;
+            gameLogic.NewGeneration(gameLogic.gameList.Progress[gameIndex]);
+        }
+
+        /// <summary>
+        /// Loops a list of games.
+        /// </summary>
+        public void ListLoop(Object source, ElapsedEventArgs e)
+        {
+            // Prints selected items from list.
+            gameUI.Cycle(gameUI.PrintList(gameLogic.gameList));
+            // Updates All games in the list.
+            foreach (GameProgress game in gameLogic.gameList.Progress)
+            {
+                gameLogic.NewGeneration(game);
+            }
         }
 
         /// <summary>
@@ -123,96 +168,40 @@
                 StartGame();
             }
         }
-
-        /// <summary>
-        /// Sets timer to 1 sec.
-        /// </summary>
-        private void SetTimer()
-        {
-            myTimer = new System.Timers.Timer(1000);
-            myTimer.Elapsed += GameLoop;
-            myTimer.AutoReset = true;
-            myTimer.Enabled = true;
-        } //for game old
-        private void SetTimer2()
-        {
-            myTimer = new System.Timers.Timer(1000);
-            myTimer.Elapsed += ListLoop;
-            myTimer.AutoReset = true;
-            myTimer.Enabled = true;
-        } //for lists
-        private void SetTimer3() // for game new
-        {
-            myTimer = new System.Timers.Timer(1000);
-            myTimer.Elapsed += ListLoop2;
-            myTimer.AutoReset = true;
-            myTimer.Enabled = true;
-        }
-
-        /// <summary>
-        /// Loops game logic.
-        /// </summary>
-        /// <param name="source"> I honsestly don't know what this is. </param>
-        /// <param name="e"> Defines each time elapsed? </param>
-        public void GameLoop(Object source, ElapsedEventArgs e)
-        {
-            gameUI.Cycle(gameUI.PrintArray(gameLogic.gameProgress));
-            //gameLogic.gameProgress.Iteration++;
-            gameLogic.NewGeneration();
-        }
-
-        public void ListLoop(Object source, ElapsedEventArgs e)
-        {
-            // Prints selected items from list.
-            gameUI.Cycle(gameUI.PrintList(gameLogic.gameList));
-            // Updates All games in the list.
-            foreach(GameProgress game in gameLogic.gameList.Progress)
-            {
-                gameLogic.NewGenerationList(game);
-            }
-        }
-        public void ListLoop2(Object source, ElapsedEventArgs e) // for game new
-        {
-            // Prints selected items from list.
-            gameUI.Cycle(gameUI.PrintList2(gameLogic.gameList));
-            // Updates All games in the list.
-            var gameIndex = gameLogic.gameList.Progress.Count() - 1;
-            gameLogic.NewGenerationList(gameLogic.gameList.Progress[gameIndex]);
-        }
-
+           
         /// <summary>
         /// Stops timer, calls serializer and saves the current state of the game,
         /// listens for user input to go back to start menu.
         /// </summary>
         public void SaveGame()
         {
-            myTimer.Enabled = false;
+            myTimer.Enabled = false;    
             
             serializer.Serialize(gameLogic.gameList);
 
             gameUI.GameIsSaved();
             
-            StartGame();
-            
+            StartGame();            
         }
+
+        /// <summary>
+        /// Loads game file. Checks if it exists.
+        /// </summary>
         private void ReadGame()
         {
             gameLogic.gameList = serializer.Deserialize();
-        }
-        private void CheckFile()
-        {
             if (gameLogic.gameList == null)
             {
                 gameUI.NoGameExists();
                 StartGame();
             }
         }
+        
         /// <summary>
-        /// Fills variables with data from file. User may choose which games to load from list
+        /// User may choose which games to load to console from file.
         /// </summary>
         private void LoadParticularGame()
         {
-           
             // Clears list in case You return to main menu and choose other games
             gameUI.gamesLoaded.Clear();
             while(true)
@@ -221,7 +210,6 @@
                 string action = gameUI.UserAction();
                 bool isActionNUmeric = int.TryParse(action, out int gameId);
 
-
                 if (gameUI.gamesLoaded.Count > 8 || ((action == "l") && (gameUI.gamesLoaded.Count > 0)))
                 {
                     break;
@@ -229,8 +217,7 @@
                 else if ((gameId >= 1) && (gameId <= gameLogic.gameList.Progress.Count))
                 {
                     gameUI.gamesLoaded.Add(gameId);
-                }
-                
+                }                
                 else if (action == "r")
                 {
                     StartGame();
