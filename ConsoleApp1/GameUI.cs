@@ -179,6 +179,8 @@
             sb.AppendLine();
             sb.AppendFormat("  Game ID: {0}    ", gameList.Progress[newGame].ID);
             sb.AppendLine();
+            sb.AppendFormat("  Is game alive: {0}    ", gameList.Progress[newGame].IsGameAlive);
+            sb.AppendLine();
             sb.AppendFormat("  Board size: {0}", gameList.Progress[newGame].BoardSize);
             sb.AppendLine();
             sb.AppendFormat("  Live cells: {0}    ", gameList.Progress[newGame].LiveCells);
@@ -187,7 +189,7 @@
             sb.AppendLine();
             sb.Append(" ");
 
-            for (int width = 1; width < 50 * gameList.Progress[newGame].BoardSize; width++)
+            for (int width = 1; width < 20 * gameList.Progress[newGame].BoardSize; width++)
             {
                 sb.Append(boarderTop);
             }
@@ -215,7 +217,7 @@
 
             sb.Append(" ");
 
-            for (int width = 1; width < 50 * gameList.Progress[newGame].BoardSize; width++)
+            for (int width = 1; width < 20 * gameList.Progress[newGame].BoardSize; width++)
             {
                 sb.Append(boarderBottom);
             }

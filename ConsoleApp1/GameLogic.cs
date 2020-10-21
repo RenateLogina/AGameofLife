@@ -1,5 +1,6 @@
 ﻿namespace GameofLife
 {
+    using Newtonsoft.Json;
     using System;
 
     /// <summary>
@@ -26,12 +27,12 @@
         public void SetSeed(int boardSize)
         {
             Random random = new Random();
-            gameProgress.Columns = 50 * boardSize - 3;
-            gameProgress.Rows = 14 + boardSize * boardSize;
-            gameProgress.Generation = new bool[gameProgress.Rows, gameProgress.Columns];
-            gameProgress.Iteration = 1;
-            gameProgress.LiveCells = 0;
             gameProgress.ID = 0;
+            gameProgress.Columns = 20 * boardSize - 3;
+            gameProgress.Rows = 7 + boardSize * boardSize;
+            gameProgress.Iteration = 1;
+            gameProgress.LiveCells = 0;            
+            gameProgress.Generation = new bool[gameProgress.Rows, gameProgress.Columns];
 
             // Populates the first generation with 2 characters, chosen randomly.
             bool[] randomFiller = new bool[] { true, false };
@@ -61,6 +62,7 @@
                 Columns = gameProgress.Columns,
                 Rows = gameProgress.Rows,
                 ID = gameList.Progress.Count + 1,
+                IsGameAlive = true,
             });
         }
 
@@ -72,14 +74,14 @@
         {
             newGeneration = new bool[game.Rows, game.Columns];
             game.LiveCells = 0;
-
+            
             // Sifts through each cell, checking it's neighbours.
             for (int rowIndex = 0; rowIndex < game.Rows; rowIndex++)
             {
                 for (int colIndex = 0; colIndex < game.Columns; colIndex++)
                 {
                     // Checks for neighbours of the cell.
-                    ListNeigbourCounter(rowIndex, colIndex, game);
+                    NeigbourCounter(rowIndex, colIndex, game);
                     // Checks if cell is alive.
                     if (neighbours == 3 || (neighbours == 2 && game.Generation[rowIndex, colIndex]))
                     {
@@ -92,7 +94,15 @@
                     }
                 }
             }
-            game.Iteration++;
+            var x = JsonConvert.SerializeObject(newGeneration);
+            var y = JsonConvert.SerializeObject(game.Generation);
+
+            if (x == y)
+            {
+                game.IsGameAlive = false;
+            }
+            game.Iteration++;            
+           
             game.Generation = newGeneration;
         }
 
@@ -100,7 +110,7 @@
         /// Algorythm to check the neighbours of a particular cell.
         /// </summary>
         /// <param name="game"> Which particular game in the List GameList Progress to check. </param>
-        private void ListNeigbourCounter(int rowIndex, int colIndex, GameProgress game)
+        private void NeigbourCounter(int rowIndex, int colIndex, GameProgress game)
         {
             neighbours = 0;
 

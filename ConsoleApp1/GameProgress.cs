@@ -13,6 +13,10 @@
         [JsonProperty("ID")]
         public int ID { get; set; }
 
+        // Stores value true if new generation differs from previous.
+        [JsonProperty("IsGameAlive")]
+        public bool IsGameAlive { get; set; }
+
         // Current board size as set by user at StartGame.
         [JsonProperty("BoardSize")]
         public int BoardSize { get; set; }
@@ -33,10 +37,11 @@
         [JsonProperty("Rows")]
         public int Rows { get; set; }
 
+
         // Stores Generation Array defined by GameLogic.
         [JsonProperty("Generation")]
         public bool[,] Generation { get; set; }
-
+        
         // Just to improve file readability a little
         [JsonProperty("                                             ")]
         public string Empty;
