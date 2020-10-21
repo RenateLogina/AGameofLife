@@ -17,7 +17,7 @@
         public void GameMenu()
         {
             Console.Clear();
-            Console.SetWindowSize(155, 34);
+            //Console.SetWindowSize(155, 34);
             Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
                               "                                                        the\n" +
                               "                                                   GAME OF LIFE\n" +
@@ -45,8 +45,9 @@
         /// <param name="generationArray"> This represents the generation array from GameManager. </param>
         public void Cycle(string generationArray)
         {
-            Console.SetCursorPosition(0, 0);
-            Console.CursorVisible = false;
+            
+            //sb.AppendLine(generationArray);
+
             Console.WriteLine("  Press P to pause and resume game");
             Console.WriteLine("  Press S to save game");
             Console.WriteLine("  Press R to return to main menu");
@@ -83,7 +84,7 @@
         /// Prints the Generation array of whole list and boarders using StringBuilder.
         /// </summary>
         /// <returns> Appended string of current game iteration. </returns>
-        public string PrintList(GameList gameList)
+        public void PrintList(GameList gameList)
         {
             #region character symbols used
             var boarderTop = "\u2584";
@@ -92,10 +93,15 @@
             var boarderRight = "\u2588";
             var boarderBottom = "\u2580";
             #endregion
-
+            Console.Clear();
+            Console.CursorVisible = false;
             var sb = new StringBuilder(string.Empty);
-            
-            for( int index = 0; index < gamesLoaded.Count; index++)
+            sb.AppendLine("  Press P to pause and resume game");
+            sb.AppendLine("  Press S to save game");
+            sb.AppendLine("  Press R to return to main menu");
+            sb.AppendLine();
+            sb.AppendFormat("  Games alive: {0}", gameList.GamesAlive);
+            for ( int index = 0; index < gamesLoaded.Count; index++)
             {
                 for( int progress = 0; progress < gameList.Progress.Count; progress++)
                 {
@@ -114,7 +120,7 @@
                         sb.AppendLine();
                         sb.Append(" ");
 
-                        for (int width = 1; width < 50 * gameList.Progress[progress].BoardSize; width++)
+                        for (int width = 1; width < 20 * gameList.Progress[progress].BoardSize; width++)
                         {
                             sb.Append(boarderTop);
                         }
@@ -142,7 +148,7 @@
 
                         sb.Append(" ");
 
-                        for (int width = 1; width < 50 * gameList.Progress[progress].BoardSize; width++)
+                        for (int width = 1; width < 20 * gameList.Progress[progress].BoardSize; width++)
                         {
                             sb.Append(boarderBottom);
                         }
@@ -153,14 +159,14 @@
 
             var result = sb.ToString();
 
-            return result;
+            Console.WriteLine(result);
         }
 
         /// <summary>
         /// Prints the Generation array of a new game and boarders using StringBuilder.
         /// </summary>
         /// <returns> Appended string of current game iteration. </returns>
-        public string PrintGame(GameList gameList)
+        public void PrintGame(GameList gameList)
         {
             #region character symbols used
             var boarderTop = "\u2584";
@@ -169,10 +175,14 @@
             var boarderRight = "\u2588";
             var boarderBottom = "\u2580";
             #endregion
-
+            Console.SetCursorPosition(0, 0);
+            Console.CursorVisible = false;
+            var newGame = gameList.Progress.Count -1;
             var sb = new StringBuilder(string.Empty);
 
-            var newGame = gameList.Progress.Count -1;
+            sb.AppendLine("  Press P to pause and resume game");
+            sb.AppendLine("  Press S to save game");
+            sb.AppendLine("  Press R to return to main menu");
 
             #region stringBuilder
 
@@ -224,8 +234,9 @@
             #endregion
 
             var result = sb.ToString();
+            Console.WriteLine(result);
 
-            return result;
+            
         }
 
         /// <summary>

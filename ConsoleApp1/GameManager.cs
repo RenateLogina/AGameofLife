@@ -128,7 +128,7 @@
         public void NewGameLoop(Object source, ElapsedEventArgs e)
         {
             // Prints selected items from list.
-            gameUI.Cycle(gameUI.PrintGame(gameLogic.gameList));
+            gameUI.PrintGame(gameLogic.gameList);
             // Updates last game in the list.
             var gameIndex = gameLogic.gameList.Progress.Count() - 1;
             gameLogic.NewGeneration(gameLogic.gameList.Progress[gameIndex]);
@@ -139,9 +139,18 @@
         /// </summary>
         public void ListLoop(Object source, ElapsedEventArgs e)
         {
+            gameLogic.gameList.GamesAlive = 0;
+            foreach (GameProgress game in gameLogic.gameList.Progress)
+            {
+                if (game.IsGameAlive == true)
+                {
+                    gameLogic.gameList.GamesAlive++;
+                }
+            }
             // Prints selected items from list.
-            gameUI.Cycle(gameUI.PrintList(gameLogic.gameList));
+            gameUI.PrintList(gameLogic.gameList);
             // Updates All games in the list.
+
             foreach (GameProgress game in gameLogic.gameList.Progress)
             {
                 gameLogic.NewGeneration(game);
