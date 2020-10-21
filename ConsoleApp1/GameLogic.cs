@@ -32,6 +32,7 @@ namespace GameofLife
             gameProgress.Generation = new bool[gameProgress.Rows, gameProgress.Columns];
             gameProgress.Iteration = 1;
             gameProgress.LiveCells = 0;
+            gameProgress.ID = 0;
 
             // Populates the first generation with 2 characters, chosen randomly.
             bool[] randomFiller = new bool[] { true, false };
@@ -47,17 +48,6 @@ namespace GameofLife
                     }
                 }
             }
-            // Adds the new game to the list, so that even if the list is empty, it can be printed with PrintList
-            //gameList.Progress.Add(new GameProgress()
-            //{
-            //    Generation = gameProgress.Generation,
-            //    LiveCells = gameProgress.LiveCells,
-            //    BoardSize = gameProgress.BoardSize,
-            //    Iteration = gameProgress.Iteration,
-            //    Columns = gameProgress.Columns,
-            //    Rows = gameProgress.Rows,
-            //    ID =0,
-            //});
         }
 
         /// <summary>

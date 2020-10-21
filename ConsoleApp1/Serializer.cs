@@ -35,12 +35,6 @@
                 gameList = JsonConvert.DeserializeObject<GameList>(File.ReadAllText(filePath));
             }
 
-            //GameProgress gameProgress = null;
-            //if (File.Exists(filePath))
-            //{
-            //    gameProgress = JsonConvert.DeserializeObject<GameProgress>(File.ReadAllText(filePath));
-            //}
-
             return gameList; //this should only return gameProgress
         }
     }

@@ -23,7 +23,7 @@
                               "                                                        the\n" +
                               "                                                   GAME OF LIFE\n" +
                               "\n                                            Enter L to load saved game\n" +
-                              "\n\n                               Choose the prefferred board BoardSize by entering a number!\n" +
+                              "\n\n                               Choose the preferred board BoardSize by entering a number!\n" +
                               "\n                                                      1. Small" +
                               "\n                                                      2. Medium" +
                               "\n                                                      3. Large" +
@@ -69,15 +69,15 @@
         /// Informs user that the game is saved. Informs of a way to return to main menu.
         /// </summary>
         /// <returns> Reads further user input. </returns>
-        public string GameIsSaved()
+        public void GameIsSaved()
         {
             //call save game method
             Console.Clear();
-            Console.WriteLine("The game is saved");
-            Console.WriteLine("Press R to return to main menu");
-            string input = Console.ReadKey(true).Key.ToString().ToLower();
-            
-            return input;
+            Console.SetCursorPosition(0, 5);
+            Console.WriteLine("                The game is saved");
+            Console.WriteLine("       Press any key to return to main menu");
+            Console.CursorVisible = false;
+            Console.ReadKey(true);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@
             
             for( int index = 0; index < gamesLoaded.Count; index++)
             {
-                for( int progress = 0; progress < gameList.Progress.Count; progress ++)
+                for( int progress = 0; progress < gameList.Progress.Count; progress++)
                 {
                     if (gamesLoaded[index] == progress + 1)
                     {
@@ -220,18 +220,29 @@
         public void ChooseGame(GameList gameList)
         {
             Console.Clear();
-            Console.SetCursorPosition(0, 5);
-            Console.Write("               Enter L to load games You've chosen: ");
+            Console.SetCursorPosition(0, 3);
+
+            Console.WriteLine("                            GAME LOADER \n\n" +
+                              "                 Enter R to return to main menu \n\n" +
+                              "               Currently there are {0} games saved\n" +
+                              "               You can load and view up to 8 games\n" +
+                            "\n\n         Enter the ID numer of game You want to load!", gameList.Progress.Count
+                );
+            Console.Write("              Enter L to load games You've chosen: ");
             foreach (int gameId in gamesLoaded)
             {
                 Console.Write("{0}, ", gameId);
             }
-            Console.WriteLine("\n                 Enter R to return to main menu \n" +
-                "                 Currently there are {0} games saved\n" +
-                "                 You can load and view up to 8 games\n" +
-                "     Please, enter the ID numer of game You want to load!", gameList.Progress.Count
-                );
-            Console.SetCursorPosition(28, 11);
+            Console.SetCursorPosition(32, 14);
+        }
+        public void NoGameExists()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 5);
+            Console.WriteLine("          No game has been saved so far!\n" +
+                              "             Press any key to return!");
+            Console.CursorVisible = false;
+            Console.ReadKey(true);            
         }
     }
 }

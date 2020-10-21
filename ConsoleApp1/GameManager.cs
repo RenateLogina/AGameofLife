@@ -34,7 +34,9 @@
                     break;
 
                 case "l":
-                    LoadGame();
+                    ReadGame();
+                    CheckFile();
+                    LoadParticularGame();
                     SetListBoard();
                     break;             
             }
@@ -50,7 +52,8 @@
                 switch (gameUI.ToggleInput().ToString().ToLower())
                 {
                     case "s":
-                        SaveGame(); 
+                        SaveGame();
+                        StartGame();
                         break;
 
                     case "p":
@@ -163,37 +166,73 @@
         public void SaveGame()
         {
             myTimer.Enabled = false;
+            // List of saved games from file.
+            GameList temporaryList = new GameList();
+            temporaryList = serializer.Deserialize();
 
-            //// Removes the new game
-            //var game = gameLogic.gameList.Progress.FirstOrDefault(x => x.ID == 0);
-            //gameLogic.gameList.Progress.Remove(game);
-
-            gameLogic.gameList.Progress.Add(new GameProgress()
+            // Create a new list if there is no file (list of saved games)
+            if(temporaryList == null)
             {
-                Generation = gameLogic.gameProgress.Generation,
-                LiveCells = gameLogic.gameProgress.LiveCells,
-                BoardSize = gameLogic.gameProgress.BoardSize,
-                Iteration = gameLogic.gameProgress.Iteration,
-                Columns = gameLogic.gameProgress.Columns,
-                Rows = gameLogic.gameProgress.Rows,
-                ID = gameLogic.gameList.Progress.Count + 1,
-            });
+                gameLogic.gameList = new GameList();
+                gameLogic.gameList.Progress.Add(new GameProgress()
+                {
+                    Generation = gameLogic.gameProgress.Generation,
+                    LiveCells = gameLogic.gameProgress.LiveCells,
+                    BoardSize = gameLogic.gameProgress.BoardSize,
+                    Iteration = gameLogic.gameProgress.Iteration,
+                    Columns = gameLogic.gameProgress.Columns,
+                    Rows = gameLogic.gameProgress.Rows,
+                    ID = 1,
+                });
+            }
+            // Overwrite the save file if it exists.
+            else
+            {
+                // Add a game to file if it's new. Else it should overwrite all games.
+                if (gameLogic.gameProgress.ID == 0)
+                {
+                    gameLogic.gameList.Progress.Add(new GameProgress()
+                    {
+                        Generation = gameLogic.gameProgress.Generation,
+                        LiveCells = gameLogic.gameProgress.LiveCells,
+                        BoardSize = gameLogic.gameProgress.BoardSize,
+                        Iteration = gameLogic.gameProgress.Iteration,
+                        Columns = gameLogic.gameProgress.Columns,
+                        Rows = gameLogic.gameProgress.Rows,
+                        ID = gameLogic.gameList.Progress.Count + 1,
+                    });
+                }
+            }
+
+
 
 
             serializer.Serialize(gameLogic.gameList);
 
-            if (gameUI.GameIsSaved() == "r")
+            gameUI.GameIsSaved();
+            
+            StartGame();
+            
+        }
+        private void ReadGame()
+        {
+            //gameLogic.gameList.Progress.Clear();
+            gameLogic.gameList = serializer.Deserialize();
+        }
+        private void CheckFile()
+        {
+            if (gameLogic.gameList == null)
             {
+                gameUI.NoGameExists();
                 StartGame();
             }
         }
-
         /// <summary>
         /// Fills variables with data from file. User may choose which games to load from list
         /// </summary>
-        private void LoadGame()
+        private void LoadParticularGame()
         {
-            gameLogic.gameList = serializer.Deserialize();
+           
             // Clears list in case You return to main menu and choose other games
             gameUI.gamesLoaded.Clear();
             while(true)
