@@ -156,6 +156,74 @@
 
             return result;
         }
+        public string PrintList2(GameList gameList)
+        {
+            #region character symbols used
+            var boarderTop = "\u2584";
+            var boarderLeft = " \u2588";
+            var dot = "\u25CF";
+            var boarderRight = "\u2588";
+            var boarderBottom = "\u2580";
+            #endregion
+
+            var sb = new StringBuilder(string.Empty);
+
+            var newGame = gameList.Progress.Count -1;
+
+            #region stringBuilder
+
+            sb.AppendLine();
+            sb.AppendFormat("  Game ID: {0}    ", gameList.Progress[newGame].ID);
+            sb.AppendLine();
+            sb.AppendFormat("  Board size: {0}", gameList.Progress[newGame].BoardSize);
+            sb.AppendLine();
+            sb.AppendFormat("  Live cells: {0}    ", gameList.Progress[newGame].LiveCells);
+            sb.AppendLine();
+            sb.AppendFormat("  Iteration NR: {0}    ", gameList.Progress[newGame].Iteration);
+            sb.AppendLine();
+            sb.Append(" ");
+
+            for (int width = 1; width < 50 * gameList.Progress[newGame].BoardSize; width++)
+            {
+                sb.Append(boarderTop);
+            }
+
+            sb.AppendLine();
+
+            for (var rowIndex = 0; rowIndex < gameList.Progress[newGame].Rows; rowIndex++)
+            {
+                sb.Append(boarderLeft);
+                for (var colIndex = 0; colIndex < gameList.Progress[newGame].Columns; colIndex++)
+                {
+                    if (gameList.Progress[newGame].Generation[rowIndex, colIndex])
+                    {
+                        sb.Append(dot);
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                }
+
+                sb.Append(boarderRight);
+                sb.AppendLine();
+            }
+
+            sb.Append(" ");
+
+            for (int width = 1; width < 50 * gameList.Progress[newGame].BoardSize; width++)
+            {
+                sb.Append(boarderBottom);
+            }
+            #endregion
+
+
+
+
+            var result = sb.ToString();
+
+            return result;
+        }
         public string PrintArray(GameProgress gameProgress)
         {
             #region character symbols used

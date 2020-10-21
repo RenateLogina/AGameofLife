@@ -48,6 +48,21 @@ namespace GameofLife
                     }
                 }
             }
+            if (gameList == null)
+            {
+                gameList = new GameList();
+            }
+
+            gameList.Progress.Add(new GameProgress()
+            {
+                Generation = gameProgress.Generation,
+                LiveCells = gameProgress.LiveCells,
+                BoardSize = gameProgress.BoardSize,
+                Iteration = gameProgress.Iteration,
+                Columns = gameProgress.Columns,
+                Rows = gameProgress.Rows,
+                ID = gameList.Progress.Count + 1,
+            });
         }
 
         /// <summary>

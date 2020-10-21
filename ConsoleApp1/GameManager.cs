@@ -22,12 +22,7 @@
         /// Starts game menu, gathers user input performs actions according to user input.
         /// </summary>
         public void StartGame()
-        {
-            if(gameLogic.gameList != null)
-            {
-                gameLogic.gameList.Progress.Clear();
-            }
-            
+        {            
             gameUI.GameMenu();
             userAction = gameUI.UserAction();
             switch (userAction)
@@ -92,11 +87,16 @@
         private void SetGameBoard()
         {
             gameUI.Clear();
+            SetTimer3();
+            Toggler();
+        }
+        private void SetGameBoard2() //old
+        {
+            gameUI.Clear();
             SetTimer();
             Toggler();
         }
-
-        private void SetListBoard()
+        private void SetListBoard() //for many items
         {
             gameUI.Clear();
             SetTimer2();
@@ -133,11 +133,18 @@
             myTimer.Elapsed += GameLoop;
             myTimer.AutoReset = true;
             myTimer.Enabled = true;
-        }
+        } //for game old
         private void SetTimer2()
         {
             myTimer = new System.Timers.Timer(1000);
             myTimer.Elapsed += ListLoop;
+            myTimer.AutoReset = true;
+            myTimer.Enabled = true;
+        } //for lists
+        private void SetTimer3() // for game new
+        {
+            myTimer = new System.Timers.Timer(1000);
+            myTimer.Elapsed += ListLoop2;
             myTimer.AutoReset = true;
             myTimer.Enabled = true;
         }
@@ -164,6 +171,14 @@
                 gameLogic.NewGenerationList(game);
             }
         }
+        public void ListLoop2(Object source, ElapsedEventArgs e) // for game new
+        {
+            // Prints selected items from list.
+            gameUI.Cycle(gameUI.PrintList2(gameLogic.gameList));
+            // Updates All games in the list.
+            var gameIndex = gameLogic.gameList.Progress.Count() - 1;
+            gameLogic.NewGenerationList(gameLogic.gameList.Progress[gameIndex]);
+        }
 
         /// <summary>
         /// Stops timer, calls serializer and saves the current state of the game,
@@ -172,62 +187,7 @@
         public void SaveGame()
         {
             myTimer.Enabled = false;
-            // List of saved games from file.
-            GameList temporaryList = serializer.Deserialize();
-
-            // Create a new list if there is no file (list of saved games).
-            if (temporaryList == null)
-            {
-                gameLogic.gameList = new GameList();
-                gameLogic.gameList.Progress.Add(new GameProgress()
-                {
-                    Generation = gameLogic.gameProgress.Generation,
-                    LiveCells = gameLogic.gameProgress.LiveCells,
-                    BoardSize = gameLogic.gameProgress.BoardSize,
-                    Iteration = gameLogic.gameProgress.Iteration,
-                    Columns = gameLogic.gameProgress.Columns,
-                    Rows = gameLogic.gameProgress.Rows,
-                    ID = 1,
-                });
-            }
-
-            // Overwrite the save file if it exists.
-            else
-            {
-                // Add a game to file if it's new. Else it should overwrite all games.
-                // Always reads game progress!!! If You have started a game in this session, it will be the last game.
-                // If You started a new game, the gameProgress will be null and will save null parameters!!!
-                if (gameLogic.gameProgress.ID == 0)
-                {
-                    gameLogic.gameList = temporaryList;
-                    gameLogic.gameList.Progress.Add(new GameProgress()
-                    {
-                        Generation = gameLogic.gameProgress.Generation,
-                        LiveCells = gameLogic.gameProgress.LiveCells,
-                        BoardSize = gameLogic.gameProgress.BoardSize,
-                        Iteration = gameLogic.gameProgress.Iteration,
-                        Columns = gameLogic.gameProgress.Columns,
-                        Rows = gameLogic.gameProgress.Rows,
-                        ID = gameLogic.gameList.Progress.Count + 1,
-                    });
-                }
-                // If loaded file has another ID but 0.
-                else
-                {
-                    gameLogic.gameProgress = null;
-                    //foreach(GameProgress game in gameLogic.gameList.Progress)
-                    //{
-                    //    if(game.ID == temporaryList.Progress.FirstOrDefault().ID)
-                    //    {
-
-                    //    }
-                    //}
-                }
-            }
-
-
-
-
+            
             serializer.Serialize(gameLogic.gameList);
 
             gameUI.GameIsSaved();
