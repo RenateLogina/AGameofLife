@@ -105,6 +105,8 @@
                         #region stringBuilder
 
                         sb.AppendLine();
+                        sb.AppendFormat("  Game ID: {0}    ", gameList.Progress[progress].ID);
+                        sb.AppendLine();
                         sb.AppendFormat("  Board size: {0}", gameList.Progress[progress].BoardSize);
                         sb.AppendLine();
                         sb.AppendFormat("  Live cells: {0}    ", gameList.Progress[progress].LiveCells);
@@ -164,6 +166,8 @@
             var boarderBottom = "\u2580";
             #endregion
             var sb = new StringBuilder(string.Empty);
+            sb.AppendLine();
+            sb.AppendFormat("  Game ID: {0}    ", gameProgress.ID);
             sb.AppendLine();
             sb.AppendFormat("  Board size: {0}", gameProgress.BoardSize);
             sb.AppendLine();

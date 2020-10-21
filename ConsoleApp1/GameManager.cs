@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Timers;
 
     /// <summary>
@@ -22,6 +23,11 @@
         /// </summary>
         public void StartGame()
         {
+            if(gameLogic.gameList != null)
+            {
+                gameLogic.gameList.Progress.Clear();
+            }
+            
             gameUI.GameMenu();
             userAction = gameUI.UserAction();
             switch (userAction)
@@ -167,11 +173,10 @@
         {
             myTimer.Enabled = false;
             // List of saved games from file.
-            GameList temporaryList = new GameList();
-            temporaryList = serializer.Deserialize();
+            GameList temporaryList = serializer.Deserialize();
 
-            // Create a new list if there is no file (list of saved games)
-            if(temporaryList == null)
+            // Create a new list if there is no file (list of saved games).
+            if (temporaryList == null)
             {
                 gameLogic.gameList = new GameList();
                 gameLogic.gameList.Progress.Add(new GameProgress()
@@ -185,12 +190,16 @@
                     ID = 1,
                 });
             }
+
             // Overwrite the save file if it exists.
             else
             {
                 // Add a game to file if it's new. Else it should overwrite all games.
+                // Always reads game progress!!! If You have started a game in this session, it will be the last game.
+                // If You started a new game, the gameProgress will be null and will save null parameters!!!
                 if (gameLogic.gameProgress.ID == 0)
                 {
+                    gameLogic.gameList = temporaryList;
                     gameLogic.gameList.Progress.Add(new GameProgress()
                     {
                         Generation = gameLogic.gameProgress.Generation,
@@ -201,6 +210,18 @@
                         Rows = gameLogic.gameProgress.Rows,
                         ID = gameLogic.gameList.Progress.Count + 1,
                     });
+                }
+                // If loaded file has another ID but 0.
+                else
+                {
+                    gameLogic.gameProgress = null;
+                    //foreach(GameProgress game in gameLogic.gameList.Progress)
+                    //{
+                    //    if(game.ID == temporaryList.Progress.FirstOrDefault().ID)
+                    //    {
+
+                    //    }
+                    //}
                 }
             }
 
@@ -216,7 +237,6 @@
         }
         private void ReadGame()
         {
-            //gameLogic.gameList.Progress.Clear();
             gameLogic.gameList = serializer.Deserialize();
         }
         private void CheckFile()

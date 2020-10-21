@@ -25,7 +25,7 @@
         /// Deserializes a file containing an object.
         /// </summary>
         /// <param name="filePath"> Location of the file as set in GameManager </param>
-        /// <returns> Returns GameProgress values </returns>
+        /// <returns> Returns a list of games </returns>
         public GameList Deserialize()
         {
             GameList gameList = null;
@@ -35,7 +35,7 @@
                 gameList = JsonConvert.DeserializeObject<GameList>(File.ReadAllText(filePath));
             }
 
-            return gameList; //this should only return gameProgress
+            return gameList;
         }
     }
 }
