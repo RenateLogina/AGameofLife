@@ -9,6 +9,7 @@
     /// </summary>
     public class GameUI
     {
+        // a list of game ID's entered by user
         public List<int> gamesLoaded = new List<int>();
 
         /// <summary>
@@ -37,22 +38,6 @@
         public void Clear()
         {
             Console.Clear();
-        }
-
-        /// <summary>
-        /// Prints Generation Array.
-        /// </summary>
-        /// <param name="generationArray"> This represents the generation array from GameManager. </param>
-        public void Cycle(string generationArray)
-        {
-            
-            //sb.AppendLine(generationArray);
-
-            Console.WriteLine("  Press P to pause and resume game");
-            Console.WriteLine("  Press S to save game");
-            Console.WriteLine("  Press R to return to main menu");
-            Console.Write(generationArray);
-            Console.WriteLine();
         }
 
         /// <summary>
@@ -93,40 +78,36 @@
             var boarderRight = "\u2588";
             var boarderBottom = "\u2580";
             #endregion
-            Console.Clear();
+
+            //Console.Clear();
+            
+            Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
             var sb = new StringBuilder(string.Empty);
-            sb.AppendLine("  Press P to pause and resume game");
-            sb.AppendLine("  Press S to save game");
-            sb.AppendLine("  Press R to return to main menu");
+            #region stringBuilder
+            sb.AppendLine("  P - pause and resume game     S - save game     R - return to main menu");
             sb.AppendLine();
-            sb.AppendFormat("  Games alive: {0}", gameList.GamesAlive);
+            sb.AppendFormat("  Games alive: {0}     ", gameList.GamesAlive);
+            sb.AppendFormat("  Cells alive: {0}     ", gameList.CellsAlive);
+            sb.AppendLine();
             for ( int index = 0; index < gamesLoaded.Count; index++)
             {
                 for( int progress = 0; progress < gameList.Progress.Count; progress++)
                 {
                     if (gamesLoaded[index] == progress + 1)
                     {
-                        #region stringBuilder
-
-                        sb.AppendLine();
-                        sb.AppendFormat("  Game ID: {0}    ", gameList.Progress[progress].ID);
-                        sb.AppendLine();
-                        sb.AppendFormat("  Board size: {0}", gameList.Progress[progress].BoardSize);
                         sb.AppendLine();
                         sb.AppendFormat("  Live cells: {0}    ", gameList.Progress[progress].LiveCells);
                         sb.AppendLine();
                         sb.AppendFormat("  Iteration NR: {0}    ", gameList.Progress[progress].Iteration);
                         sb.AppendLine();
                         sb.Append(" ");
-
                         for (int width = 1; width < 20 * gameList.Progress[progress].BoardSize; width++)
                         {
                             sb.Append(boarderTop);
                         }
 
                         sb.AppendLine();
-
                         for (var rowIndex = 0; rowIndex < gameList.Progress[progress].Rows; rowIndex++)
                         {
                             sb.Append(boarderLeft);
@@ -147,7 +128,6 @@
                         }
 
                         sb.Append(" ");
-
                         for (int width = 1; width < 20 * gameList.Progress[progress].BoardSize; width++)
                         {
                             sb.Append(boarderBottom);
@@ -157,9 +137,9 @@
                 }
             }
 
-            var result = sb.ToString();
-
+            var result = sb.ToString();        
             Console.WriteLine(result);
+            Console.SetWindowPosition(0, 0);
         }
 
         /// <summary>
@@ -179,19 +159,9 @@
             Console.CursorVisible = false;
             var newGame = gameList.Progress.Count -1;
             var sb = new StringBuilder(string.Empty);
-
-            sb.AppendLine("  Press P to pause and resume game");
-            sb.AppendLine("  Press S to save game");
-            sb.AppendLine("  Press R to return to main menu");
-
             #region stringBuilder
-
+            sb.AppendLine("  P - pause and resume game     S - save game     R - return to main menu");
             sb.AppendLine();
-            sb.AppendFormat("  Game ID: {0}    ", gameList.Progress[newGame].ID);
-            sb.AppendLine();
-            sb.AppendFormat("  Is game alive: {0}    ", gameList.Progress[newGame].IsGameAlive);
-            sb.AppendLine();
-            sb.AppendFormat("  Board size: {0}", gameList.Progress[newGame].BoardSize);
             sb.AppendLine();
             sb.AppendFormat("  Live cells: {0}    ", gameList.Progress[newGame].LiveCells);
             sb.AppendLine();
@@ -283,6 +253,21 @@
                               "             Press any key to return!");
             Console.CursorVisible = false;
             Console.ReadKey(true);            
+        }
+
+        /// <summary>
+        /// Error message and instruction if max game limit (1000) is reached
+        /// </summary>
+        public void MaxGameList()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 5);
+            Console.WriteLine("          The limit of 1000 games per file is reached." +
+                              "             You can't add a new game at this point.\n" +
+                              "  To start a new game, restart the app. Otherwise-load existing game\n" +
+                              "                     Press any key to return!");
+            Console.CursorVisible = false;
+            Console.ReadKey(true);
         }
     }
 }

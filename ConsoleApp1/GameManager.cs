@@ -9,6 +9,7 @@
     /// </summary>
     public class GameManager
     {
+        private bool MaxGame;
         public Timer myTimer;
         private string userAction;
         private GameLogic gameLogic = new GameLogic();
@@ -28,7 +29,15 @@
                 case "2":
                 case "3":
                     SetFirstIteration();
-                    SetGameBoard();
+                    if(MaxGame)
+                    {
+                        StartGame();
+                    }
+                    else
+                    {
+                        SetGameBoard();
+                    }
+
                     break;
 
                 case "l":
@@ -76,8 +85,17 @@
         /// </summary>
         private void SetFirstIteration()
         {
-            gameLogic.gameProgress.BoardSize = Convert.ToInt32(userAction);
-            gameLogic.SetSeed(gameLogic.gameProgress.BoardSize);
+            MaxGame = false;
+            if (gameLogic.gameList.Progress.Count < 1000)
+            {
+                gameLogic.gameProgress.BoardSize = Convert.ToInt32(userAction);
+                gameLogic.SetSeed(gameLogic.gameProgress.BoardSize);
+            }
+            else
+            {
+                gameUI.MaxGameList();
+                MaxGame = true;
+            }
         }
 
         /// <summary>
@@ -129,6 +147,7 @@
         {
             // Prints selected items from list.
             gameUI.PrintGame(gameLogic.gameList);
+
             // Updates last game in the list.
             var gameIndex = gameLogic.gameList.Progress.Count() - 1;
             gameLogic.NewGeneration(gameLogic.gameList.Progress[gameIndex]);
@@ -140,6 +159,7 @@
         public void ListLoop(Object source, ElapsedEventArgs e)
         {
             gameLogic.gameList.GamesAlive = 0;
+           
             foreach (GameProgress game in gameLogic.gameList.Progress)
             {
                 if (game.IsGameAlive == true)
@@ -147,10 +167,12 @@
                     gameLogic.gameList.GamesAlive++;
                 }
             }
+
             // Prints selected items from list.
             gameUI.PrintList(gameLogic.gameList);
-            // Updates All games in the list.
+            gameLogic.gameList.CellsAlive = 0;
 
+            // Updates All games in the list.
             foreach (GameProgress game in gameLogic.gameList.Progress)
             {
                 gameLogic.NewGeneration(game);

@@ -11,6 +11,7 @@ namespace GameofLife
         [JsonProperty("Progress")]
         public List<GameProgress> Progress { get; set; }
         public int GamesAlive { get; set; }
+        public int CellsAlive { get; set; }
         public GameList()
         {
             Progress = new List<GameProgress>();

@@ -11,11 +11,9 @@
     public class GameLogic
     {
         #region variables
-
         public GameProgress gameProgress = new GameProgress();
         public GameList gameList = new GameList();
         private bool[,] newGeneration { get; set; }
-
         private int neighbours;
         #endregion
 
@@ -87,6 +85,7 @@
                     {
                         newGeneration[rowIndex, colIndex] = true;
                         game.LiveCells++;
+                        gameList.CellsAlive++;
                     }
                     else
                     {
