@@ -14,7 +14,7 @@
         public GameProgress gameProgress = new GameProgress();
         public GameList gameList = new GameList();
         private bool[,] newGeneration { get; set; }
-        private int neighbours;
+        public int neighbours;
         #endregion
 
         /// <summary>
@@ -109,7 +109,7 @@
         /// Algorythm to check the neighbours of a particular cell.
         /// </summary>
         /// <param name="game"> Which particular game in the List GameList Progress to check. </param>
-        private void NeigbourCounter(int rowIndex, int colIndex, GameProgress game)
+        public void NeigbourCounter(int rowIndex, int colIndex, GameProgress game)
         {
             neighbours = 0;
 
