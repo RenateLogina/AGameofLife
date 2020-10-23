@@ -9,12 +9,17 @@
     /// </summary>
     public class GameManager
     {
-        private bool MaxGame;
-        public Timer myTimer;
+        // Timer
+        public Timer MyTimer;
+        private bool maxGame;        
         private string userAction;
         private GameLogic gameLogic = new GameLogic();
         private GameUI gameUI = new GameUI();
         private Serializer serializer = new Serializer();
+        public GameManager()
+        {
+
+        }
 
         /// <summary>
         /// Starts game menu, gathers user input performs actions according to user input.
@@ -23,13 +28,15 @@
         {            
             gameUI.GameMenu();
             userAction = gameUI.UserAction();
+
             switch (userAction)
             {
                 case "1":
                 case "2":
                 case "3":
                     SetFirstIteration();
-                    if(MaxGame)
+
+                    if(maxGame)
                     {
                         StartGame();
                     }
@@ -44,6 +51,7 @@
                     ReadGame();
                     LoadParticularGame();
                     SetListBoard();
+
                     break;
 
                 case "q":
@@ -56,22 +64,25 @@
         /// </summary>
         private void Toggler()
         {
-            while (myTimer.Enabled)
+            while (MyTimer.Enabled)
             {
                 switch (gameUI.ToggleInput().ToString().ToLower())
                 {
                     case "s":
                         SaveGame();
                         StartGame();
+
                         break;
 
                     case "p":
                         PauseGame();
+
                         break;
 
                     case "r":
-                        myTimer.Enabled = false;
+                        MyTimer.Enabled = false;
                         StartGame();
+
                         break;
 
                     default:
@@ -85,7 +96,8 @@
         /// </summary>
         private void SetFirstIteration()
         {
-            MaxGame = false;
+            maxGame = false;
+
             if (gameLogic.gameList.Progress.Count < 1000)
             {
                 gameLogic.gameProgress.BoardSize = Convert.ToInt32(userAction);
@@ -94,7 +106,8 @@
             else
             {
                 gameUI.MaxGameList();
-                MaxGame = true;
+
+                maxGame = true;
             }
         }
 
@@ -123,10 +136,10 @@
         /// </summary>
         private void SetGameTimer()
         {
-            myTimer = new System.Timers.Timer(1000);
-            myTimer.Elapsed += NewGameLoop;
-            myTimer.AutoReset = true;
-            myTimer.Enabled = true;
+            MyTimer = new System.Timers.Timer(1000);
+            MyTimer.Elapsed += NewGameLoop;
+            MyTimer.AutoReset = true;
+            MyTimer.Enabled = true;
         }
 
         /// <summary>
@@ -134,10 +147,10 @@
         /// </summary>
         private void SetListTimer()
         {
-            myTimer = new System.Timers.Timer(1000);
-            myTimer.Elapsed += ListLoop;
-            myTimer.AutoReset = true;
-            myTimer.Enabled = true;
+            MyTimer = new System.Timers.Timer(1000);
+            MyTimer.Elapsed += ListLoop;
+            MyTimer.AutoReset = true;
+            MyTimer.Enabled = true;
         }
 
         /// <summary>
@@ -158,24 +171,19 @@
         /// </summary>
         public void ListLoop(Object source, ElapsedEventArgs e)
         {
-            gameLogic.gameList.GamesAlive = 0;
-           
-            foreach (GameProgress game in gameLogic.gameList.Progress)
-            {
-                if (game.IsGameAlive == true)
-                {
-                    gameLogic.gameList.GamesAlive++;
-                }
-            }
-
-            // Prints selected items from list.
             gameUI.PrintList(gameLogic.gameList);
+            gameLogic.gameList.GamesAlive = 0;
             gameLogic.gameList.CellsAlive = 0;
-
+       
             // Updates All games in the list.
             foreach (GameProgress game in gameLogic.gameList.Progress)
             {
                 gameLogic.NewGeneration(game);
+
+                if (game.IsGameAlive == true)
+                {
+                    gameLogic.gameList.GamesAlive++;
+                }
             }
         }
 
@@ -184,11 +192,12 @@
         /// </summary>
         private void PauseGame()
         {
-            myTimer.Enabled = false;
+            MyTimer.Enabled = false;
             string input = gameUI.ToggleInput().ToString().ToLower();
+
             if (input == "p")
             {
-                myTimer.Enabled = true;
+                MyTimer.Enabled = true;
             }
             else if (input == "s")
             {
@@ -206,10 +215,9 @@
         /// </summary>
         public void SaveGame()
         {
-            myTimer.Enabled = false;    
+            MyTimer.Enabled = false;    
             
             serializer.Serialize(gameLogic.gameList);
-
             gameUI.GameIsSaved();
             
             StartGame();            

@@ -1,32 +1,48 @@
-using System;
-using Xunit;
-using GameofLife;
-
 namespace GameofLife.Tests
 {
+    using Xunit;
+    using GameofLife;
+
     public class LogicTests
     {
         /// <summary>
-        /// Checks if the neigbhours of a particular cell are counted correctly.
-        /// Should be true if indexes are 0,0 and false if 0,1
+        /// Checks if the neigbhours of a particular cell in a simple shape are counted correctly. Should work.
         /// </summary>
-        [Fact]
-        public void NeighboursTest()
+        [Theory]
+        [InlineData(0, 1, 2)]
+        [InlineData(0,0,1)]
+        public void NeighboursTestShouldWork(int x, int y, int expected)
         {
-            // Arrange
-            int expected = 1;
+            // Arrange.
             GameProgress testgame = new GameProgress() { Rows = 2, Columns = 2, Generation = new bool [,]{ { true, false }, { true, false }, }, };
+            GameLogic gameLogic = new GameLogic();         
+            
+            // Act.
+            gameLogic.NeigbourCounter(x,y, testgame);
+            int actual = gameLogic.Neighbours;
 
+            // Assert.
+            Assert.Equal(expected, actual);            
+        }
+
+        /// <summary>
+        /// Checks if the neigbhours of a particular cell in a simple shape are counted correctly. Should not work.
+        /// </summary>
+        [Theory]
+        [InlineData(0, 1, 1)]
+        [InlineData(0, 0, 2)]
+        public void NeighboursTestShouldNotWork(int x, int y, int expected)
+        {
+            // Arrange.
+            GameProgress testgame = new GameProgress() { Rows = 2, Columns = 2, Generation = new bool[,] { { true, false }, { true, false }, }, };
             GameLogic gameLogic = new GameLogic();
-            
-            // Act
-            gameLogic.NeigbourCounter(0, 1, testgame);
 
-            int actual = gameLogic.neighbours;
+            // Act.
+            gameLogic.NeigbourCounter(x, y, testgame);
+            int actual = gameLogic.Neighbours;
 
-            // Assert
+            // Assert.
             Assert.Equal(expected, actual);
-            
         }
     }
 }

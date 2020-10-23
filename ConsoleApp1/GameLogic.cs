@@ -11,10 +11,12 @@
     public class GameLogic
     {
         #region variables
+        // Defines an object game progress that contains all the info of a particular game.
         public GameProgress gameProgress = new GameProgress();
+        // Defines a List of objects - games.
         public GameList gameList = new GameList();
-        private bool[,] newGeneration { get; set; }
-        public int neighbours;
+        // Amount of neighbours of a particular element in array. Made public for testing
+        public int Neighbours;
         #endregion
 
         /// <summary>
@@ -25,6 +27,7 @@
         public void SetSeed(int boardSize)
         {
             Random random = new Random();
+
             gameProgress.ID = 0;
             gameProgress.Columns = 20 * boardSize - 3;
             gameProgress.Rows = 7 + boardSize * boardSize;
@@ -34,6 +37,7 @@
 
             // Populates the first generation with 2 characters, chosen randomly.
             bool[] randomFiller = new bool[] { true, false };
+
             for (int rowIndex = 0; rowIndex < gameProgress.Rows; rowIndex++)
             {
                 for (int colIndex = 0; colIndex < gameProgress.Columns; colIndex++)
@@ -46,6 +50,7 @@
                     }
                 }
             }
+
             if (gameList == null)
             {
                 gameList = new GameList();
@@ -70,7 +75,7 @@
         /// <param name="game"> Particular game in the list </param>
         public void NewGeneration(GameProgress game)
         {
-            newGeneration = new bool[game.Rows, game.Columns];
+            bool[,] newGeneration = new bool[game.Rows, game.Columns];
             game.LiveCells = 0;
             
             // Sifts through each cell, checking it's neighbours.
@@ -81,7 +86,7 @@
                     // Checks for neighbours of the cell.
                     NeigbourCounter(rowIndex, colIndex, game);
                     // Checks if cell is alive.
-                    if (neighbours == 3 || (neighbours == 2 && game.Generation[rowIndex, colIndex]))
+                    if (Neighbours == 3 || (Neighbours == 2 && game.Generation[rowIndex, colIndex]))
                     {
                         newGeneration[rowIndex, colIndex] = true;
                         game.LiveCells++;
@@ -93,6 +98,7 @@
                     }
                 }
             }
+
             var x = JsonConvert.SerializeObject(newGeneration);
             var y = JsonConvert.SerializeObject(game.Generation);
 
@@ -100,6 +106,7 @@
             {
                 game.IsGameAlive = false;
             }
+
             game.Iteration++;            
            
             game.Generation = newGeneration;
@@ -111,7 +118,7 @@
         /// <param name="game"> Which particular game in the List GameList Progress to check. </param>
         public void NeigbourCounter(int rowIndex, int colIndex, GameProgress game)
         {
-            neighbours = 0;
+            Neighbours = 0;
 
             // Loops through a 3x3 square with an array cell set in center.
             for (int Row = -1; Row < 2; Row++)
@@ -127,7 +134,7 @@
                         }
                         else if (game.Generation[rowIndex + Row, colIndex + Col])
                         {
-                            neighbours++;
+                            Neighbours++;
                         }
                     }
                 }

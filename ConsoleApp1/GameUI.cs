@@ -9,7 +9,7 @@
     /// </summary>
     public class GameUI
     {
-        // a list of game ID's entered by user
+        // A list of game ID's entered by user.
         public List<int> gamesLoaded = new List<int>();
 
         /// <summary>
@@ -18,7 +18,6 @@
         public void GameMenu()
         {
             Console.Clear();
-            //Console.SetWindowSize(155, 34);
             Console.WriteLine("\n\n\n\n\n                                                    Welcome to\n" +
                               "                                                        the\n" +
                               "                                                   GAME OF LIFE\n" +
@@ -47,6 +46,7 @@
         public ConsoleKey ToggleInput()
         {
             ConsoleKey input = Console.ReadKey(true).Key;
+
             return input;
         }
 
@@ -56,7 +56,6 @@
         /// <returns> Reads further user input. </returns>
         public void GameIsSaved()
         {
-            //call save game method
             Console.Clear();
             Console.SetCursorPosition(0, 5);
             Console.WriteLine("                The game is saved");
@@ -79,17 +78,17 @@
             var boarderBottom = "\u2580";
             #endregion
 
-            //Console.Clear();
-            
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
             var sb = new StringBuilder(string.Empty);
+
             #region stringBuilder
             sb.AppendLine("  P - pause and resume game     S - save game     R - return to main menu");
             sb.AppendLine();
             sb.AppendFormat("  Games alive: {0}     ", gameList.GamesAlive);
             sb.AppendFormat("  Cells alive: {0}     ", gameList.CellsAlive);
             sb.AppendLine();
+
             for ( int index = 0; index < gamesLoaded.Count; index++)
             {
                 for( int progress = 0; progress < gameList.Progress.Count; progress++)
@@ -102,12 +101,14 @@
                         sb.AppendFormat("  Iteration NR: {0}    ", gameList.Progress[progress].Iteration);
                         sb.AppendLine();
                         sb.Append(" ");
+
                         for (int width = 1; width < 20 * gameList.Progress[progress].BoardSize; width++)
                         {
                             sb.Append(boarderTop);
                         }
 
                         sb.AppendLine();
+
                         for (var rowIndex = 0; rowIndex < gameList.Progress[progress].Rows; rowIndex++)
                         {
                             sb.Append(boarderLeft);
@@ -128,6 +129,7 @@
                         }
 
                         sb.Append(" ");
+
                         for (int width = 1; width < 20 * gameList.Progress[progress].BoardSize; width++)
                         {
                             sb.Append(boarderBottom);
@@ -157,8 +159,10 @@
             #endregion
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
+
             var newGame = gameList.Progress.Count -1;
             var sb = new StringBuilder(string.Empty);
+
             #region stringBuilder
             sb.AppendLine("  P - pause and resume game     S - save game     R - return to main menu");
             sb.AppendLine();
@@ -205,8 +209,6 @@
 
             var result = sb.ToString();
             Console.WriteLine(result);
-
-            
         }
 
         /// <summary>
@@ -216,6 +218,7 @@
         public string UserAction()
         {
             string UserAction = Console.ReadLine().ToLower();
+
             return UserAction;
         }
 
@@ -235,10 +238,12 @@
                             "\n\n         Enter the ID numer of game You want to load!", gameList.Progress.Count
                 );
             Console.Write("              Enter L to load games You've chosen: ");
+           
             foreach (int gameId in gamesLoaded)
             {
                 Console.Write("{0}, ", gameId);
             }
+
             Console.SetCursorPosition(32, 14);
         }
         

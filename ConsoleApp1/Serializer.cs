@@ -1,15 +1,12 @@
 ﻿namespace GameofLife
 {
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     /// <summary>
     /// Saves and reads game file that contains GameProgress object and is initiated from GameManager
     /// </summary>
-    public class Serializer
+    public class Serializer : ISerializer
     {
         public string filePath = @"C:\Users\r.logina\Documents\gameprogress.save";
         /// <summary>
