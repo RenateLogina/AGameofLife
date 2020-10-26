@@ -228,7 +228,7 @@
         /// <summary>
         /// Loads game file. Checks if it exists.
         /// </summary>
-        private void ReadGame()
+        public void ReadGame()
         {
             gameLogic.gameList = _serializer.Deserialize();
             if (gameLogic.gameList == null)

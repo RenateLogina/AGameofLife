@@ -55,5 +55,21 @@
             mockUI.Verify(p => p.GameIsSaved(), Times.Once);
 
         }
+        [Fact]
+        public void ReadFile()
+        {
+            var serializerMock = new Mock<ISerializer>();
+            var gameLogic = new GameLogic();
+            var mockUI = new Mock<IGameUI>();
+            var mockFileSystem = new MockFileSystem();
+            GameManager sut = new GameManager(serializerMock.Object, mockUI.Object);
+            serializerMock.Setup(p => p.Deserialize());
+            mockUI.Setup(p => p.NoGameExists());
+
+            sut.ReadGame();
+
+            Assert.NotNull(gameLogic.gameList);
+            serializerMock.Verify(p => p.Deserialize(), Times.Once);
+        }
     }
 }
