@@ -11,14 +11,17 @@
     {
         // Timer
         public Timer MyTimer;
-        private bool maxGame;        
+        public bool maxGame;        
         private string userAction;
-        private GameLogic gameLogic = new GameLogic();
-        private GameUI gameUI = new GameUI();
-        private Serializer serializer = new Serializer();
-        public GameManager()
+        public GameLogic gameLogic = new GameLogic();
+        //private GameUI gameUI = new GameUI();
+        //private Serializer serializer = new Serializer();
+        private readonly ISerializer _serializer;
+        private readonly IGameUI _gameUI;
+        public GameManager(ISerializer serializer, IGameUI gameUI)
         {
-
+            _serializer = serializer;
+            _gameUI = gameUI;
         }
 
         /// <summary>
@@ -26,8 +29,8 @@
         /// </summary>
         public void StartGame()
         {            
-            gameUI.GameMenu();
-            userAction = gameUI.UserAction();
+            _gameUI.GameMenu();
+            userAction = _gameUI.UserAction();
 
             switch (userAction)
             {
@@ -66,7 +69,7 @@
         {
             while (MyTimer.Enabled)
             {
-                switch (gameUI.ToggleInput().ToString().ToLower())
+                switch (_gameUI.ToggleInput().ToString().ToLower())
                 {
                     case "s":
                         SaveGame();
@@ -94,7 +97,7 @@
         /// <summary>
         /// Sets the first randomly filled Generation array according to user input. 
         /// </summary>
-        private void SetFirstIteration()
+        public void SetFirstIteration()
         {
             maxGame = false;
 
@@ -105,7 +108,7 @@
             }
             else
             {
-                gameUI.MaxGameList();
+                _gameUI.MaxGameList();
 
                 maxGame = true;
             }
@@ -116,7 +119,7 @@
         /// </summary>
         private void SetGameBoard()
         {
-            gameUI.Clear();
+            _gameUI.Clear();
             SetGameTimer();
             Toggler();
         }
@@ -126,7 +129,7 @@
         /// </summary>
         private void SetListBoard()
         {
-            gameUI.Clear();
+            _gameUI.Clear();
             SetListTimer();
             Toggler();
         }
@@ -159,7 +162,7 @@
         public void NewGameLoop(Object source, ElapsedEventArgs e)
         {
             // Prints selected items from list.
-            gameUI.PrintGame(gameLogic.gameList);
+            _gameUI.PrintGame(gameLogic.gameList);
 
             // Updates last game in the list.
             var gameIndex = gameLogic.gameList.Progress.Count() - 1;
@@ -171,7 +174,7 @@
         /// </summary>
         public void ListLoop(Object source, ElapsedEventArgs e)
         {
-            gameUI.PrintList(gameLogic.gameList);
+            _gameUI.PrintList(gameLogic.gameList, gameLogic.gamesLoaded);
             gameLogic.gameList.GamesAlive = 0;
             gameLogic.gameList.CellsAlive = 0;
        
@@ -193,7 +196,7 @@
         private void PauseGame()
         {
             MyTimer.Enabled = false;
-            string input = gameUI.ToggleInput().ToString().ToLower();
+            string input = _gameUI.ToggleInput().ToString().ToLower();
 
             if (input == "p")
             {
@@ -217,9 +220,8 @@
         {
             MyTimer.Enabled = false;    
             
-            serializer.Serialize(gameLogic.gameList);
-            gameUI.GameIsSaved();
-            
+            _serializer.Serialize(gameLogic.gameList);
+            _gameUI.GameIsSaved();
             StartGame();            
         }
 
@@ -228,10 +230,10 @@
         /// </summary>
         private void ReadGame()
         {
-            gameLogic.gameList = serializer.Deserialize();
+            gameLogic.gameList = _serializer.Deserialize();
             if (gameLogic.gameList == null)
             {
-                gameUI.NoGameExists();
+                _gameUI.NoGameExists();
                 StartGame();
             }
         }
@@ -242,20 +244,20 @@
         private void LoadParticularGame()
         {
             // Clears list in case You return to main menu and choose other games
-            gameUI.gamesLoaded.Clear();
+            gameLogic.gamesLoaded.Clear();
             while(true)
             {
-                gameUI.ChooseGame(gameLogic.gameList);
-                string action = gameUI.UserAction();
+                _gameUI.ChooseGame(gameLogic.gameList, gameLogic.gamesLoaded);
+                string action = _gameUI.UserAction();
                 bool isActionNUmeric = int.TryParse(action, out int gameId);
 
-                if (gameUI.gamesLoaded.Count > 8 || ((action == "l") && (gameUI.gamesLoaded.Count > 0)))
+                if (gameLogic.gamesLoaded.Count > 8 || ((action == "l") && (gameLogic.gamesLoaded.Count > 0)))
                 {
                     break;
                 }
                 else if ((gameId >= 1) && (gameId <= gameLogic.gameList.Progress.Count))
                 {
-                    gameUI.gamesLoaded.Add(gameId);
+                    gameLogic.gamesLoaded.Add(gameId);
                 }                
                 else if (action == "r")
                 {

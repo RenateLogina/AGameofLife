@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Game mechanics - setting the first seeds, generating new iteration, 
@@ -15,6 +16,7 @@
         public GameProgress gameProgress = new GameProgress();
         // Defines a List of objects - games.
         public GameList gameList = new GameList();
+        public List<int> gamesLoaded = new List<int>();
         // Amount of neighbours of a particular element in array. Made public for testing
         public int Neighbours;
         #endregion

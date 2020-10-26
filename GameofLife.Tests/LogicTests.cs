@@ -31,7 +31,7 @@ namespace GameofLife.Tests
         [Theory]
         [InlineData(0, 1, 1)]
         [InlineData(0, 0, 2)]
-        public void NeighboursTestShouldNotWork(int x, int y, int expected)
+        public void NeighboursTestShouldNotBeEqual(int x, int y, int expected)
         {
             // Arrange.
             GameProgress testgame = new GameProgress() { Rows = 2, Columns = 2, Generation = new bool[,] { { true, false }, { true, false }, }, };
@@ -42,7 +42,7 @@ namespace GameofLife.Tests
             int actual = gameLogic.Neighbours;
 
             // Assert.
-            Assert.Equal(expected, actual);
+            Assert.NotEqual(expected, actual);
         }
     }
 }

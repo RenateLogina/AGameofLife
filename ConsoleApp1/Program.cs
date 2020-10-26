@@ -12,7 +12,7 @@
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            GameManager gameManager = new GameManager();
+            GameManager gameManager = new GameManager(new Serializer(), new GameUI());
             gameManager.StartGame();
         }
     }

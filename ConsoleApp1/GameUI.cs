@@ -3,14 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.IO.Abstractions;
 
     /// <summary>
     /// Prints console commands and collects user input.
     /// </summary>
-    public class GameUI
+    public class GameUI : IGameUI
     {
+
         // A list of game ID's entered by user.
-        public List<int> gamesLoaded = new List<int>();
 
         /// <summary>
         /// Prints main game menu. 
@@ -68,7 +69,7 @@
         /// Prints the Generation array of whole list and boarders using StringBuilder.
         /// </summary>
         /// <returns> Appended string of current game iteration. </returns>
-        public void PrintList(GameList gameList)
+        public void PrintList(GameList gameList, List<int> gamesLoaded)
         {
             #region character symbols used
             var boarderTop = "\u2584";
@@ -226,7 +227,7 @@
         /// Shows menu where user can choose up to 8 games to load from file.
         /// </summary>
         /// <param name="gameList"> List with game ID's </param>
-        public void ChooseGame(GameList gameList)
+        public void ChooseGame(GameList gameList, List<int> gamesLoaded)
         {
             Console.Clear();
             Console.SetCursorPosition(0, 3);
